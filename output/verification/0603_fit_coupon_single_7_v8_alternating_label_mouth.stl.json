@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_fit_coupon_single_7_v8_alternating_label_mouth.stl",
+  "format": "binary",
+  "units": "unknown",
+  "triangleCount": 676,
+  "uniqueVertexCount": 332,
+  "bounds": {
+    "min": [
+      0.0,
+      0.1468304544687271,
+      0.0
+    ],
+    "max": [
+      140.0,
+      74.8531723022461,
+      3.450000047683716
+    ],
+    "size": [
+      140.0,
+      74.70634184777737,
+      3.450000047683716
+    ]
+  },
+  "surfaceArea": 26727.339589137388,
+  "signedVolume": 12235.353053022149,
+  "volume": 12235.353053022149,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}

@@ -1,4 +1,4 @@
-// 0603 编带收纳活页页 v7：0.8 mm 共用隔档 + 右侧标签导入喇叭口
+// 0603 编带收纳活页页 v8：0.8 mm 共用隔档 + 交错镜像标签喇叭口
 //
 // 机械契约：
 // - FDM / PETG；页面平放，底面贴打印平台，设计目标为无支撑打印。
@@ -108,11 +108,74 @@ module label_recess_cut(
 ) {
     pocket_w = label_w + 2 * label_clear;
     inner_h = label_h + 2 * label_clear;
+    frame_depth = label_frame_thickness + label_lip_inset;
+    mouth_depth = min(frame_depth, label_entry_frame_depth);
+    relief_len = min(
+        pocket_w,
+        label_entry_relief_length + label_entry_mouth_skew
+    );
+    mouth_h = inner_h + 2 * (frame_depth - mouth_depth);
 
-    // 只在标签实际可见/可插入的内窗口下挖浅槽，保留压边和相邻标签
-    // 共用隔档下方的底板，避免行距压缩后出现悬空薄桥。
-    translate([x0, cy - inner_h / 2, base_t - recess_depth])
-        cube([pocket_w + eps, inner_h, recess_depth + 2 * eps]);
+    // 主体区域只挖标签实际窗口；右端入口同步放宽浅槽，避免标签
+    // 从喇叭口进入时先撞到底板台阶。压边和相邻标签共用隔档仍保留。
+    if (pocket_w - relief_len > eps) {
+        translate([x0, cy - inner_h / 2, base_t - recess_depth])
+            cube([
+                pocket_w - relief_len,
+                inner_h,
+                recess_depth + 2 * eps
+            ]);
+    }
+    if (relief_len > eps && mouth_h > inner_h) {
+        translate([
+            x0 + pocket_w - relief_len,
+            cy - mouth_h / 2,
+            base_t - recess_depth
+        ])
+            cube([relief_len + eps, mouth_h, recess_depth + 2 * eps]);
+    }
+}
+
+module label_lip(
+    x0,
+    y0,
+    pocket_w,
+    pocket_h,
+    full_depth,
+    mouth_depth,
+    relief_len,
+    base_t,
+    lip_h,
+    lower = true
+) {
+    safe_relief = min(max(0, relief_len), pocket_w);
+    main_w = pocket_w - safe_relief;
+    z0 = base_t - eps;
+
+    // 用两个相互重叠的实体段形成入口退让，避免 2D 斜面挤压相邻
+    // 标签共用隔档时产生重复三角面；上下唇的退让长度交替镜像。
+    if (main_w > eps) {
+        if (lower) {
+            translate([x0, y0, z0])
+                cube([main_w, full_depth, lip_h + eps]);
+        } else {
+            translate([x0, y0 + pocket_h - full_depth, z0])
+                cube([main_w, full_depth, lip_h + eps]);
+        }
+    }
+    if (safe_relief > eps && mouth_depth > eps) {
+        if (lower) {
+            translate([x0 + main_w, y0, z0])
+                cube([safe_relief, mouth_depth, lip_h + eps]);
+        } else {
+            translate([
+                x0 + main_w,
+                y0 + pocket_h - mouth_depth,
+                z0
+            ])
+                cube([safe_relief, mouth_depth, lip_h + eps]);
+        }
+    }
 }
 
 module label_frame(
@@ -126,36 +189,49 @@ module label_frame(
     lip_inset = label_lip_inset,
     lip_h = label_lip_height,
     entry_relief_len = label_entry_relief_length,
-    entry_depth = label_entry_frame_depth
+    entry_depth = label_entry_frame_depth,
+    entry_skew = label_entry_mouth_skew,
+    mouth_flip = false
 ) {
     pocket_w = label_w + 2 * label_clear;
     pocket_h = label_h + 2 * label_clear + 2 * (frame_t + lip_inset);
     frame_depth = frame_t + lip_inset;
     relief_len = min(max(0, entry_relief_len), pocket_w);
-    main_w = pocket_w - relief_len;
     mouth_depth = min(max(0, entry_depth), frame_depth);
+    long_relief = min(pocket_w, relief_len + max(0, entry_skew));
+    short_relief = max(0, relief_len - max(0, entry_skew));
+    lower_relief = mouth_flip ? long_relief : short_relief;
+    upper_relief = mouth_flip ? short_relief : long_relief;
     y0 = cy - pocket_h / 2;
 
     // 右端开放，纸片从页面右侧向左滑入；入口前段减薄上下压边，
-    // 让标签先进入一个更宽的喇叭口，再进入后段的完整压边。
+    // 上下斜口按行交替镜像，避免相邻标签的八字口全部顺拐。
     // 左端不再单独做挡墙，直接使用装订边整块高台的右端面止挡。
     // 轻微穿入底板，避免导出 STL 时形成共面接触边。
-    if (main_w > eps) {
-        translate([x0, y0, base_t - eps])
-            cube([main_w, frame_depth, lip_h + eps]);
-        translate([x0, y0 + pocket_h - frame_depth, base_t - eps])
-            cube([main_w, frame_depth, lip_h + eps]);
-    }
-    if (relief_len > eps && mouth_depth > eps) {
-        translate([x0 + main_w, y0, base_t - eps])
-            cube([relief_len, mouth_depth, lip_h + eps]);
-        translate([
-            x0 + main_w,
-            y0 + pocket_h - mouth_depth,
-            base_t - eps
-        ])
-            cube([relief_len, mouth_depth, lip_h + eps]);
-    }
+    label_lip(
+        x0,
+        y0,
+        pocket_w,
+        pocket_h,
+        frame_depth,
+        mouth_depth,
+        lower_relief,
+        base_t,
+        lip_h,
+        lower = true
+    );
+    label_lip(
+        x0,
+        y0,
+        pocket_w,
+        pocket_h,
+        frame_depth,
+        mouth_depth,
+        upper_relief,
+        base_t,
+        lip_h,
+        lower = false
+    );
 }
 
 module label_entry_latch(
@@ -372,7 +448,7 @@ module page_0603() {
 
         for (i = [0 : lane_count - 1]) {
             cy = row_center(i);
-            label_frame(cy);
+            label_frame(cy, mouth_flip = (i % 2 == 1));
             label_entry_latch(cy);
             lane(
                 x0,
@@ -410,7 +486,7 @@ module fit_coupon(profile = "dual_t") {
 
         for (i = [0 : coupon_count - 1]) {
             cy = row_center(i, coupon_h, coupon_count, coupon_pitch);
-            label_frame(cy);
+            label_frame(cy, mouth_flip = (i % 2 == 1));
             label_entry_latch(cy);
             lane(
                 coupon_x0,
