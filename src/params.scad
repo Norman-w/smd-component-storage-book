@@ -1,4 +1,4 @@
-// 0603 编带收纳页 v5 参数
+// 0603 编带收纳页 v6 参数
 // 单位：mm；默认按 A5 纵向页面、PETG、0.4 mm 喷嘴、平放无支撑打印。
 
 // 页面：ISO A5 纵向比例；比 B5 更紧凑，适合常见活页夹系统。
@@ -29,8 +29,8 @@ binding_full_fill_until_x = binding_spine_wall_x + binding_spine_wall_width;
 
 // 标签与滑道布局
 // 25×9 mm 标签仍保留足够开口；利用相邻标签共享的水平隔档压缩行距。
-lane_count = 17;
-lane_pitch = 11.6;
+lane_count = 18;
+lane_pitch = 11.0;
 label_width = 25;
 label_height = 9;
 label_clearance = 0.4;
@@ -57,10 +57,11 @@ tape_side_clearance = 0.3;
 top_clearance = 0.25;
 
 // 限位结构
-// 轨道支脚与相邻轨道之间的共用隔档最薄处均控制在约 1 mm。
-rail_stem_width = 1.0;
+// 轨道支脚与相邻轨道之间的共用隔档最薄处均控制在约 0.8 mm。
+// 这是针对 0.4 mm 喷嘴 PETG 的紧凑上限；若实测强度不足，退回 1.0 mm。
+rail_stem_width = 0.8;
 lane_partition_enabled = true;
-lane_partition_top_width = 1.0;
+lane_partition_top_width = 0.8;
 lane_partition_overlap = 0.02;
 // 每侧向内压住编带 1.3 mm；顶部有效开口约为 6.0 mm。
 rail_cap_overlap = 1.3;
