@@ -1,4 +1,4 @@
-// 0603 编带收纳活页页 v8：0.8 mm 共用隔档 + 交错镜像标签喇叭口
+// 0603 编带收纳活页页 v9：0.8 mm 共用隔档 + 交错凸字标签入口
 //
 // 机械契约：
 // - FDM / PETG；页面平放，底面贴打印平台，设计目标为无支撑打印。
@@ -110,10 +110,7 @@ module label_recess_cut(
     inner_h = label_h + 2 * label_clear;
     frame_depth = label_frame_thickness + label_lip_inset;
     mouth_depth = min(frame_depth, label_entry_frame_depth);
-    relief_len = min(
-        pocket_w,
-        label_entry_relief_length + label_entry_mouth_skew
-    );
+    relief_len = min(pocket_w, label_entry_relief_length);
     mouth_h = inner_h + 2 * (frame_depth - mouth_depth);
 
     // 主体区域只挖标签实际窗口；右端入口同步放宽浅槽，避免标签
@@ -190,7 +187,6 @@ module label_frame(
     lip_h = label_lip_height,
     entry_relief_len = label_entry_relief_length,
     entry_depth = label_entry_frame_depth,
-    entry_skew = label_entry_mouth_skew,
     mouth_flip = false
 ) {
     pocket_w = label_w + 2 * label_clear;
@@ -198,14 +194,16 @@ module label_frame(
     frame_depth = frame_t + lip_inset;
     relief_len = min(max(0, entry_relief_len), pocket_w);
     mouth_depth = min(max(0, entry_depth), frame_depth);
-    long_relief = min(pocket_w, relief_len + max(0, entry_skew));
-    short_relief = max(0, relief_len - max(0, entry_skew));
-    lower_relief = mouth_flip ? long_relief : short_relief;
-    upper_relief = mouth_flip ? short_relief : long_relief;
+    // 两侧入口退让长度相同，只镜像“哪一侧保留完整压边”。
+    // 完整压边就是向标签内部凸出的正向舌边，而不是凹进去的缺口。
+    lower_relief = relief_len;
+    upper_relief = relief_len;
+    lower_mouth_depth = mouth_flip ? frame_depth : mouth_depth;
+    upper_mouth_depth = mouth_flip ? mouth_depth : frame_depth;
     y0 = cy - pocket_h / 2;
 
-    // 右端开放，纸片从页面右侧向左滑入；入口前段减薄上下压边，
-    // 上下斜口按行交替镜像，避免相邻标签的八字口全部顺拐。
+    // 右端开放，纸片从页面右侧向左滑入；入口一侧保留完整压边
+    // 形成凸字舌边，另一侧减薄导入；上下方向按行交替镜像。
     // 左端不再单独做挡墙，直接使用装订边整块高台的右端面止挡。
     // 轻微穿入底板，避免导出 STL 时形成共面接触边。
     label_lip(
@@ -214,7 +212,7 @@ module label_frame(
         pocket_w,
         pocket_h,
         frame_depth,
-        mouth_depth,
+        lower_mouth_depth,
         lower_relief,
         base_t,
         lip_h,
@@ -226,7 +224,7 @@ module label_frame(
         pocket_w,
         pocket_h,
         frame_depth,
-        mouth_depth,
+        upper_mouth_depth,
         upper_relief,
         base_t,
         lip_h,
