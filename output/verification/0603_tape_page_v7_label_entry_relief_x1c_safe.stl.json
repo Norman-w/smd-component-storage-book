@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_tape_page_v7_label_entry_relief_x1c_safe.stl",
+  "format": "binary",
+  "units": "unknown",
+  "triangleCount": 4138,
+  "uniqueVertexCount": 1991,
+  "bounds": {
+    "min": [
+      54.0,
+      23.0,
+      0.0
+    ],
+    "max": [
+      202.0,
+      233.0,
+      3.450000047683716
+    ],
+    "size": [
+      148.0,
+      210.0,
+      3.450000047683716
+    ]
+  },
+  "surfaceArea": 94701.50543801599,
+  "signedVolume": 43846.538000824614,
+  "volume": 43846.538000824614,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}

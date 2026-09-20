@@ -1,4 +1,4 @@
-// 0603 编带收纳页 v6 参数
+// 0603 编带收纳页 v7 参数
 // 单位：mm；默认按 A5 纵向页面、PETG、0.4 mm 喷嘴、平放无支撑打印。
 
 // 页面：ISO A5 纵向比例；比 B5 更紧凑，适合常见活页夹系统。
@@ -41,6 +41,10 @@ label_frame_thickness = 1.0;
 // 标签内窗口仍保留约 9.8 mm 高度；相邻标签由共用水平隔档分开。
 label_lip_inset = 1.8;
 label_lip_height = 0.9;
+// 标签从右侧插入时，入口前 3 mm 采用浅压边，形成更明显的导入喇叭口；
+// 通过后段完整压边保持标签防脱。这里的深度是沿页面横向的压边厚度。
+label_entry_relief_length = 3.0;
+label_entry_frame_depth = 1.4;
 // 左侧入口增加低斜台：标签推入时跨过，反向滑出时提供止退。
 label_entry_latch_length = 1.2;
 label_entry_latch_height = 0.35;

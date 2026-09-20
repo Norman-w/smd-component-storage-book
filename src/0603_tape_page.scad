@@ -1,4 +1,4 @@
-// 0603 编带收纳活页页 v6：0.8 mm 共用隔档 + 加厚右侧标签槽
+// 0603 编带收纳活页页 v7：0.8 mm 共用隔档 + 右侧标签导入喇叭口
 //
 // 机械契约：
 // - FDM / PETG；页面平放，底面贴打印平台，设计目标为无支撑打印。
@@ -124,20 +124,38 @@ module label_frame(
     label_clear = label_clearance,
     frame_t = label_frame_thickness,
     lip_inset = label_lip_inset,
-    lip_h = label_lip_height
+    lip_h = label_lip_height,
+    entry_relief_len = label_entry_relief_length,
+    entry_depth = label_entry_frame_depth
 ) {
     pocket_w = label_w + 2 * label_clear;
     pocket_h = label_h + 2 * label_clear + 2 * (frame_t + lip_inset);
     frame_depth = frame_t + lip_inset;
+    relief_len = min(max(0, entry_relief_len), pocket_w);
+    main_w = pocket_w - relief_len;
+    mouth_depth = min(max(0, entry_depth), frame_depth);
     y0 = cy - pocket_h / 2;
 
-    // 右端开放，纸片从页面右侧向左滑入；上下边缘向内压住纸片。
+    // 右端开放，纸片从页面右侧向左滑入；入口前段减薄上下压边，
+    // 让标签先进入一个更宽的喇叭口，再进入后段的完整压边。
     // 左端不再单独做挡墙，直接使用装订边整块高台的右端面止挡。
     // 轻微穿入底板，避免导出 STL 时形成共面接触边。
-    translate([x0, y0, base_t - eps])
-        cube([pocket_w, frame_depth, lip_h + eps]);
-    translate([x0, y0 + pocket_h - frame_depth, base_t - eps])
-        cube([pocket_w, frame_depth, lip_h + eps]);
+    if (main_w > eps) {
+        translate([x0, y0, base_t - eps])
+            cube([main_w, frame_depth, lip_h + eps]);
+        translate([x0, y0 + pocket_h - frame_depth, base_t - eps])
+            cube([main_w, frame_depth, lip_h + eps]);
+    }
+    if (relief_len > eps && mouth_depth > eps) {
+        translate([x0 + main_w, y0, base_t - eps])
+            cube([relief_len, mouth_depth, lip_h + eps]);
+        translate([
+            x0 + main_w,
+            y0 + pocket_h - mouth_depth,
+            base_t - eps
+        ])
+            cube([relief_len, mouth_depth, lip_h + eps]);
+    }
 }
 
 module label_entry_latch(
@@ -155,12 +173,12 @@ module label_entry_latch(
     pocket_w = label_w + 2 * label_clear;
     pocket_h = label_h + 2 * label_clear + 2 * (frame_t + lip_inset);
     frame_depth = frame_t + lip_inset;
-    y0 = cy - pocket_h / 2;
-    inner_y0 = y0 + frame_depth;
-    inner_h = pocket_h - 2 * frame_depth;
+    inner_h = label_h + 2 * label_clear;
+    inner_y0 = cy - inner_h / 2;
     z0 = base_t - label_recess_depth;
 
-    // 低斜台只放在右侧标签入口中央通道，平放打印，无悬空。
+    // 低斜台只放在右侧标签入口中央通道，平放打印，无悬空；
+    // 入口上下压边变浅后，斜台仍保持在标签实际窗口的中央。
     // 右侧为低端，向左推入时逐渐爬上斜台；反向退出先遇到高端。
     translate([x0 + pocket_w - latch_len, inner_y0, z0])
         polyhedron(
