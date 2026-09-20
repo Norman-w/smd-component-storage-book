@@ -20,7 +20,9 @@ function track_end_x(page_w = page_width) = page_w - right_edge_margin;
 function row_center(index, page_h = page_height, count = lane_count, pitch = lane_pitch) =
     (page_h - (count - 1) * pitch) / 2 + index * pitch;
 function binding_hole_y(index, page_h = page_height, count = binding_hole_count, pitch = binding_hole_pitch) =
-    (page_h - (count - 1) * pitch) / 2 + index * pitch;
+    binding_hole_pattern_enabled
+        ? binding_hole_positions[index]
+        : (page_h - (count - 1) * pitch) / 2 + index * pitch;
 
 module rounded_plate(w, h, r, z) {
     linear_extrude(height = z)
@@ -270,7 +272,7 @@ module fit_coupon(profile = "dual_t") {
     }
 }
 
-// 根文件默认生成完整 B5 页面；测试片使用独立 wrapper，便于分别导出。
+// 根文件默认生成完整 A5 页面；测试片使用独立 wrapper，便于分别导出。
 if (model_selector == "page") {
     page_0603();
 } else if (model_selector == "fit_dual_t") {
