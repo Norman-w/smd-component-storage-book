@@ -42,7 +42,8 @@ module label_recess_cut(
     recess_depth = label_recess_depth
 ) {
     pocket_w = label_w + 2 * label_clear;
-    pocket_h = label_h + 2 * label_clear;
+    pocket_h = label_h + 2 * label_clear +
+        2 * (label_frame_thickness + label_lip_inset);
 
     // 从页面左边缘开口，底部仍然保留，不形成穿透孔。
     translate([x0 - eps, cy - pocket_h / 2, base_t - recess_depth])
@@ -61,7 +62,7 @@ module label_frame(
     lip_h = label_lip_height
 ) {
     pocket_w = label_w + 2 * label_clear;
-    pocket_h = label_h + 2 * label_clear;
+    pocket_h = label_h + 2 * label_clear + 2 * (frame_t + lip_inset);
     frame_depth = frame_t + lip_inset;
     y0 = cy - pocket_h / 2;
 
@@ -73,6 +74,48 @@ module label_frame(
         cube([pocket_w, frame_depth, lip_h + eps]);
     translate([x0 + pocket_w - frame_t, y0, base_t - eps])
         cube([frame_t, pocket_h, lip_h + eps]);
+}
+
+module label_entry_latch(
+    cy,
+    x0 = binding_margin,
+    base_t = base_thickness,
+    label_w = label_width,
+    label_h = label_height,
+    label_clear = label_clearance,
+    frame_t = label_frame_thickness,
+    lip_inset = label_lip_inset,
+    latch_len = label_entry_latch_length,
+    latch_h = label_entry_latch_height
+) {
+    pocket_w = label_w + 2 * label_clear;
+    pocket_h = label_h + 2 * label_clear + 2 * (frame_t + lip_inset);
+    frame_depth = frame_t + lip_inset;
+    y0 = cy - pocket_h / 2;
+    inner_y0 = y0 + frame_depth;
+    inner_h = pocket_h - 2 * frame_depth;
+    z0 = base_t - label_recess_depth;
+
+    // 低斜台只放在标签入口中央通道，平放打印，无悬空。
+    // 斜坡朝内，推入容易；反向退出会遇到较高的一侧。
+    translate([x0, inner_y0, z0])
+        polyhedron(
+            points = [
+                [0, 0, 0],
+                [latch_len, 0, 0],
+                [latch_len, 0, latch_h],
+                [0, inner_h, 0],
+                [latch_len, inner_h, 0],
+                [latch_len, inner_h, latch_h]
+            ],
+            faces = [
+                [0, 1, 4, 3],
+                [0, 2, 1],
+                [3, 4, 5],
+                [0, 3, 5, 2],
+                [1, 2, 5, 4]
+            ]
+        );
 }
 
 module lane(
@@ -192,6 +235,7 @@ module page_0603() {
         for (i = [0 : lane_count - 1]) {
             cy = row_center(i);
             label_frame(cy);
+            label_entry_latch(cy);
             lane(x0, x1, cy, profile = rail_profile);
         }
     }
@@ -220,6 +264,7 @@ module fit_coupon(profile = "dual_t") {
         for (i = [0 : coupon_count - 1]) {
             cy = row_center(i, coupon_h, coupon_count, coupon_pitch);
             label_frame(cy);
+            label_entry_latch(cy);
             lane(coupon_x0, coupon_x1, cy, profile = profile);
         }
     }

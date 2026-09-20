@@ -22,11 +22,16 @@ lane_count = 15;
 lane_pitch = 15;
 label_width = 25;
 label_height = 9;
-label_clearance = 0.5;
+label_clearance = 0.4;
 label_recess_depth = 0.15;
 label_frame_thickness = 0.8;
-label_lip_inset = 0.75;
+// 只增加压边覆盖量，不改变标签纸本身的 25 × 9 mm 尺寸。
+// 实际压边宽度 = label_frame_thickness + label_lip_inset = 2.2 mm。
+label_lip_inset = 1.4;
 label_lip_height = 0.7;
+// 左侧入口增加低斜台：标签推入时跨过，反向滑出时提供止退。
+label_entry_latch_length = 1.2;
+label_entry_latch_height = 0.35;
 // 标签槽结束后只留 1 mm 的结构间隙，标签直接贴近对应滑道入口。
 label_column_width = 26;
 track_gap_after_label = 1;

@@ -2,6 +2,8 @@
 
 当前版本是 ISO B5 纵向页面，外廓 `176 × 250 mm`，默认 15 条平行滑道。页面左侧带常见 B5 26 孔圆孔列，标签槽为浅凹槽，底面保持完整。
 
+当前源模型已进入标签槽 v2：标签纸仍为 `25 × 9 mm`，只把上、下压边向纸片内侧覆盖得更深，并在左侧入口加入低斜台止退；不依赖胶粘。新版 STL 使用 `_v2` 文件名，先打印测试片确认实际插入手感。
+
 ## 设计假设
 
 - FDM / PETG / 0.4 mm 喷嘴；底板改为 `0.6 mm` 极薄版本，约对应 0.2 mm 层高的 3 层实体，不是单层空壳；大尺寸页面必须实测翘曲。
@@ -11,6 +13,7 @@
 - 双侧 T 形限位是正式页面默认结构；单侧 7 形只用于对照测试片。
 - 装订孔默认 26 个，孔距 `9.5 mm`，孔径 `5.5 mm`，孔中心距左边 `6.5 mm`；参数可在 `src/params.scad` 调整。
 - 标签槽右边缘与对应滑道入口约留 `1 mm`，纸片标签插入后紧邻编带，不再留出较宽空白区。
+- 标签纸仍按 `25 × 9 mm` 使用；标签槽不放大纸片尺寸，改为加宽上、下压边覆盖量（约 `2.2 mm`），入口另有 `0.35 mm` 低斜台止退，标签不需要胶粘。
 - 滑道入口改为短装入豁口：横挡后的实际窗口约 `6 mm`，左端横挡高度降为 `1.8 mm`，T 形压边从其后立即开始，兼顾推进手感和防掉出。
 - T 形压边每侧内收 `1.0 mm`，顶部有效开口约 `7.2 mm`，优先加强编带防脱。
 - 所有载带包络和配合间隙集中在 `src/params.scad`。
@@ -33,6 +36,15 @@ OPENSCAD=/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
 "$OPENSCAD" --export-format binstl \
   -o output/3d-print/0603_fit_coupon_single_7.stl \
   src/0603_fit_coupon_single_7.scad
+```
+
+标签槽加强版 v2 输出：
+
+```text
+output/3d-print/0603_tape_page_v2.stl
+output/3d-print/0603_tape_page_v2_x1c_safe.stl
+output/3d-print/0603_fit_coupon_dual_t_v2.stl
+output/3d-print/0603_fit_coupon_single_7_v2.stl
 ```
 
 ## 打印前检查
