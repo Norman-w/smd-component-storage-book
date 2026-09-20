@@ -22,6 +22,10 @@ binding_hole_positions = [32, 51, 70, 140, 159, 178];
 binding_spine_wall_enabled = true;
 binding_spine_wall_width = 2.0;
 binding_spine_wall_x = binding_hole_center_x + binding_hole_diameter / 2 + 1.0;
+// 装订边从页面左缘到这条加强脊全部抬高铺满；孔位随后贯穿整段高台。
+// 这既提高孔边抗撕裂能力，也让加强脊可以直接作为标签槽左端止档。
+binding_full_fill_enabled = true;
+binding_full_fill_until_x = binding_spine_wall_x + binding_spine_wall_width;
 
 // 标签与滑道布局
 lane_count = 13;
@@ -40,7 +44,8 @@ label_lip_height = 0.7;
 label_entry_latch_length = 1.2;
 label_entry_latch_height = 0.35;
 // 标签槽结束后只留 1 mm 的结构间隙，标签直接贴近对应滑道入口。
-label_column_width = 26;
+// 标签槽镜像到右侧开口，从右向左插入；左端止档使用装订边加强脊。
+label_column_width = label_width + 2 * label_clearance;
 track_gap_after_label = 1;
 right_edge_margin = 3;
 

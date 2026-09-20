@@ -2,9 +2,9 @@
 
 当前版本是 ISO A5 纵向页面，外廓 `148 × 210 mm`，默认 13 条平行滑道。页面左侧带常见 A5 六孔圆孔列，标签槽为浅凹槽，底面保持完整。
 
-当前源模型已进入编带防脱 v3：标签纸仍为 `25 × 9 mm`，上、下压边覆盖量增至约 `2.6 mm`，标签凹槽深度增至 `0.25 mm`，不依赖胶粘。编带内宽收窄到约 `8.6 mm`，双侧 T 形压边每侧覆盖约 `1.3 mm`，顶部有效开口约 `6.0 mm`；相邻滑道直接共用分隔墙。新版 STL 使用 `_v3` 文件名，先打印测试片确认实际插入和防脱手感。
+当前源模型已进入编带防脱 v4：标签纸仍为 `25 × 9 mm`，上、下压边覆盖量约 `2.6 mm`，标签凹槽深度 `0.25 mm`，不依赖胶粘。标签槽已镜像为右侧开口，标签从右向左插入，左端直接由活页孔内侧的整块加强高台止挡；标签槽向左移动后，释放出的空间全部让给 SMD 滑道。编带内宽约 `8.6 mm`，双侧 T 形压边每侧覆盖约 `1.3 mm`，顶部有效开口约 `6.0 mm`；相邻滑道直接共用分隔墙。新版 STL 使用 `_v4_right_label` 文件名，先打印测试片确认实际插入和防脱手感。
 
-当前工作树在 v3 基础上增加了连续外圈围墙：围墙高约 `3.45 mm`、平面内墙厚 `2.0 mm`，从页面最外缘向内形成加强边，既帮助装订后保持页面平整，也作为每条编带滑道的右端止挡。新版导出文件使用 `_v3_perimeter` 文件名。
+当前工作树在 v4 基础上保留连续外圈围墙：围墙高约 `3.45 mm`、平面内墙厚 `2.0 mm`，从页面最外缘向内形成加强边，既帮助装订后保持页面平整，也作为每条编带滑道的右端止挡。左侧装订区域从页面边缘到孔列内侧加强脊全部满铺到同一高度，孔洞贯穿高台，以提升装订孔抗撕裂能力。新版导出文件使用 `_v4_right_label` 文件名。
 
 ## 使用与商业授权
 
@@ -21,7 +21,7 @@
 - 载带默认按 8 mm 压纹塑料带估算：宽度 8 mm、最大凸包高度 1.8 mm。
 - 双侧 T 形限位是正式页面默认结构；单侧 7 形只用于对照测试片。
 - 装订孔默认采用 A5 六孔制式，孔径 `5.5 mm`，孔中心距左边 `6.5 mm`，纵向位置为 `32 / 51 / 70 / 140 / 159 / 178 mm`；参数可在 `src/params.scad` 调整。
-- 标签槽右边缘与对应滑道入口约留 `1 mm`，纸片标签插入后紧邻编带，不再留出较宽空白区。
+- 标签槽右边缘与对应滑道入口约留 `1 mm`，纸片标签从右向左插入，左端由装订孔旁加强高台止挡，标签槽挪出的空间让给编带滑道。
 - 标签纸仍按 `25 × 9 mm` 使用；标签槽不放大纸片尺寸，改为加宽上、下压边覆盖量（约 `2.6 mm`），凹槽深度 `0.25 mm`，入口另有 `0.35 mm` 低斜台止退，标签不需要胶粘。
 - 滑道入口改为短装入豁口：横挡后的实际窗口约 `6 mm`，左端横挡高度降为 `1.8 mm`，T 形压边从其后立即开始，兼顾推进手感和防掉出。
 - 编带槽内宽约 `8.6 mm`，顶部有效开口约 `6.0 mm`，优先加强编带防脱；槽间不留空白，直接共用分隔墙。
@@ -35,25 +35,25 @@
 OPENSCAD=/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_tape_page_v3_perimeter.stl \
+  -o output/3d-print/0603_tape_page_v4_right_label.stl \
   src/0603_tape_page.scad
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_fit_coupon_dual_t_v3_perimeter.stl \
+  -o output/3d-print/0603_fit_coupon_dual_t_v4_right_label.stl \
   src/0603_fit_coupon_dual_t.scad
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_fit_coupon_single_7_v3_perimeter.stl \
+  -o output/3d-print/0603_fit_coupon_single_7_v4_right_label.stl \
   src/0603_fit_coupon_single_7.scad
 ```
 
-编带防脱加强版 v3 输出：
+右侧标签入口 + 装订边满铺加强版 v4 输出：
 
 ```text
-output/3d-print/0603_tape_page_v3_perimeter.stl
-output/3d-print/0603_tape_page_v3_perimeter_x1c_safe.stl
-output/3d-print/0603_fit_coupon_dual_t_v3_perimeter.stl
-output/3d-print/0603_fit_coupon_single_7_v3_perimeter.stl
+output/3d-print/0603_tape_page_v4_right_label.stl
+output/3d-print/0603_tape_page_v4_right_label_x1c_safe.stl
+output/3d-print/0603_fit_coupon_dual_t_v4_right_label.stl
+output/3d-print/0603_fit_coupon_single_7_v4_right_label.stl
 ```
 
 ## 打印前检查
@@ -70,7 +70,7 @@ STL 导出后还需要检查包围盒、流形性、底面连续性和 T 形压�
 output/3d-print/0603_tape_page_v1_x1c_petg_standard.3mf
 ```
 
-工程使用 Bambu Lab X1 Carbon、0.4 mm 喷嘴、PETG Basic 和纹理 PEI 板，并在工程内明确写入 `256 × 256 × 256 mm` 打印区及左下角 `18 × 28 mm` 校准避让区。当前 v3 页面通过 `src/0603_tape_page_x1c_safe.scad` 以 `54 / 23 mm` 居中放置，实际页面约为 `148 × 210 × 3.45 mm`，不会占用左下校准区。
+工程使用 Bambu Lab X1 Carbon、0.4 mm 喷嘴、PETG Basic 和纹理 PEI 板，并在工程内明确写入 `256 × 256 × 256 mm` 打印区及左下角 `18 × 28 mm` 校准避让区。当前 v4 页面通过 `src/0603_tape_page_x1c_safe.scad` 以 `54 / 23 mm` 放置，实际页面约为 `148 × 210 × 3.45 mm`，不会占用左下校准区。
 
 质量优先参数：
 
@@ -80,4 +80,4 @@ output/3d-print/0603_tape_page_v1_x1c_petg_standard.3mf
 - 默认/外墙加速度 `500 mm/s²`，首层 `300 mm/s²`，风扇范围 `10–40%`，最大体积流量 `8 mm³/s`。
 - 关闭 skirt，外裙边改为 `1 mm`；A5 页面在 X1C 床面上有充足边缘余量，可按首层观察结果决定是否加 brim。
 
-该 `.3mf` 是上一版 B5 工程，不能代表当前 A5 v3 几何；正式打印前应在 Bambu Studio 中导入新的 v3 STL，确认 X1C 当前装的是干燥 PETG、纹理 PEI 板已清洁，并先用双 T 测试片确认实际编带配合。
+该 `.3mf` 是上一版 B5 工程，不能代表当前 A5 v4 几何；正式打印前应在 Bambu Studio 中导入新的 v4 STL，确认 X1C 当前装的是干燥 PETG、纹理 PEI 板已清洁，并先用双 T 测试片确认实际编带和右侧标签配合。

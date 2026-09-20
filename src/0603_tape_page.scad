@@ -1,8 +1,8 @@
-// 0603 编带收纳活页页 v3 perimeter
+// 0603 编带收纳活页页 v4：右侧标签入口 + 装订边满铺加强
 //
 // 机械契约：
 // - FDM / PETG；页面平放，底面贴打印平台，设计目标为无支撑打印。
-// - 页面没有分型面、螺钉或密封件；编带从每条滑道左端的开放装入窗口放入。
+// - 页面没有分型面、螺钉或密封件；标签从右向左插入，编带从每条滑道左端的开放装入窗口放入。
 // - 双侧 T 形限位覆盖编带两侧边缘；入口横挡防止编带自行滑回，外圈围墙承担末端止挡。
 // - 载带尺寸为可调包络，默认按 8 mm 压纹塑料带的保守初值建模。
 
@@ -15,7 +15,8 @@ function channel_clear_width() = tape_width + 2 * tape_side_clearance;
 function lane_outer_width() = channel_clear_width() + 2 * rail_stem_width;
 function rail_stem_height() = tape_height + top_clearance;
 function rail_total_height() = rail_stem_height() + rail_cap_thickness;
-function track_start_x() = binding_margin + label_column_width + track_gap_after_label;
+function label_pocket_x0() = binding_full_fill_until_x;
+function track_start_x() = label_pocket_x0() + label_column_width + track_gap_after_label;
 function track_end_x(page_w = page_width) =
     page_w - (perimeter_wall_enabled ? perimeter_wall_inset + perimeter_wall_width : right_edge_margin) +
         (perimeter_wall_enabled ? eps : 0);
@@ -58,9 +59,24 @@ module reinforced_plate(
     if (with_perimeter) {
         difference() {
             rounded_plate(w, h, radius, wall_h);
-            translate([inner_offset, inner_offset, base_t])
-                linear_extrude(height = max(eps, wall_h - base_t + eps))
-                    rounded_profile(inner_w, inner_h, inner_radius);
+            translate([inner_offset, inner_offset, base_t]) {
+                difference() {
+                    linear_extrude(height = max(eps, wall_h - base_t + eps))
+                        rounded_profile(inner_w, inner_h, inner_radius);
+
+                    // 装订边不挖空，形成从页面左缘到加强脊的整块高台。
+                    // 其右端面就是标签的左端止档。
+                    if (binding_full_fill_enabled &&
+                        binding_full_fill_until_x > inner_offset) {
+                        translate([-eps, -eps, -eps])
+                            cube([
+                                binding_full_fill_until_x - inner_offset + eps,
+                                inner_h + 2 * eps,
+                                wall_h - base_t + 2 * eps
+                            ]);
+                    }
+                }
+            }
         }
     } else {
         rounded_plate(w, h, radius, base_t);
@@ -82,7 +98,7 @@ module binding_spine_wall(
 
 module label_recess_cut(
     cy,
-    x0 = binding_margin,
+    x0 = label_pocket_x0(),
     base_t = base_thickness,
     label_w = label_width,
     label_h = label_height,
@@ -93,14 +109,14 @@ module label_recess_cut(
     pocket_h = label_h + 2 * label_clear +
         2 * (label_frame_thickness + label_lip_inset);
 
-    // 从页面左边缘开口，底部仍然保留，不形成穿透孔。
-    translate([x0 - eps, cy - pocket_h / 2, base_t - recess_depth])
+    // 从页面右侧开口，底部仍然保留，不形成穿透孔；左端贴住装订加强脊。
+    translate([x0, cy - pocket_h / 2, base_t - recess_depth])
         cube([pocket_w + eps, pocket_h, recess_depth + 2 * eps]);
 }
 
 module label_frame(
     cy,
-    x0 = binding_margin,
+    x0 = label_pocket_x0(),
     base_t = base_thickness,
     label_w = label_width,
     label_h = label_height,
@@ -114,19 +130,18 @@ module label_frame(
     frame_depth = frame_t + lip_inset;
     y0 = cy - pocket_h / 2;
 
-    // 左端开放，纸片从页面外侧滑入；上下边缘向内压住纸片。
+    // 右端开放，纸片从页面右侧向左滑入；上下边缘向内压住纸片。
+    // 左端不再单独做挡墙，直接使用装订边整块高台的右端面止挡。
     // 轻微穿入底板，避免导出 STL 时形成共面接触边。
     translate([x0, y0, base_t - eps])
         cube([pocket_w, frame_depth, lip_h + eps]);
     translate([x0, y0 + pocket_h - frame_depth, base_t - eps])
         cube([pocket_w, frame_depth, lip_h + eps]);
-    translate([x0 + pocket_w - frame_t, y0, base_t - eps])
-        cube([frame_t, pocket_h, lip_h + eps]);
 }
 
 module label_entry_latch(
     cy,
-    x0 = binding_margin,
+    x0 = label_pocket_x0(),
     base_t = base_thickness,
     label_w = label_width,
     label_h = label_height,
@@ -144,24 +159,24 @@ module label_entry_latch(
     inner_h = pocket_h - 2 * frame_depth;
     z0 = base_t - label_recess_depth;
 
-    // 低斜台只放在标签入口中央通道，平放打印，无悬空。
-    // 斜坡朝内，推入容易；反向退出会遇到较高的一侧。
-    translate([x0, inner_y0, z0])
+    // 低斜台只放在右侧标签入口中央通道，平放打印，无悬空。
+    // 右侧为低端，向左推入时逐渐爬上斜台；反向退出先遇到高端。
+    translate([x0 + pocket_w - latch_len, inner_y0, z0])
         polyhedron(
             points = [
                 [0, 0, 0],
+                [0, 0, latch_h],
                 [latch_len, 0, 0],
-                [latch_len, 0, latch_h],
                 [0, inner_h, 0],
-                [latch_len, inner_h, 0],
-                [latch_len, inner_h, latch_h]
+                [0, inner_h, latch_h],
+                [latch_len, inner_h, 0]
             ],
             faces = [
-                [0, 1, 4, 3],
-                [0, 2, 1],
-                [3, 4, 5],
-                [0, 3, 5, 2],
-                [1, 2, 5, 4]
+                [0, 1, 2],
+                [3, 5, 4],
+                [0, 2, 5, 3],
+                [1, 4, 5, 2],
+                [0, 3, 4, 1]
             ]
         );
 }
@@ -259,7 +274,12 @@ module base_with_label_recess(
                     -eps
                 ])
                     cylinder(
-                        h = base_t + 2 * eps,
+                        h = max(
+                            base_t,
+                            binding_full_fill_enabled
+                                ? perimeter_wall_height
+                                : base_t
+                        ) + 2 * eps,
                         d = binding_hole_diameter
                     );
             }
