@@ -4,11 +4,20 @@
 
 当前源模型已进入编带防脱 v3：标签纸仍为 `25 × 9 mm`，上、下压边覆盖量增至约 `2.6 mm`，标签凹槽深度增至 `0.25 mm`，不依赖胶粘。编带内宽收窄到约 `8.6 mm`，双侧 T 形压边每侧覆盖约 `1.3 mm`，顶部有效开口约 `6.0 mm`；相邻滑道直接共用分隔墙。新版 STL 使用 `_v3` 文件名，先打印测试片确认实际插入和防脱手感。
 
+当前工作树在 v3 基础上增加了连续外圈围墙：围墙高约 `3.45 mm`、平面内墙厚 `2.0 mm`，从页面最外缘向内形成加强边，既帮助装订后保持页面平整，也作为每条编带滑道的右端止挡。新版导出文件使用 `_v3_perimeter` 文件名。
+
+## 使用与商业授权
+
+本作品默认仅供个人学习、测试、收藏和非商业打印使用。未经作者书面许可，禁止将原模型或任何基于本模型的改造、缩放、修补、重混或衍生版本用于商业用途，包括但不限于：销售打印件、按需打印或代打服务、批量生产、产品配套或赠品、手板/复模、定制服务、商业展示，以及上传或销售商业衍生模型。
+
+如需商业使用，请在使用前联系作者（MakerWorld / GitHub：`@NormanWang`）取得书面授权，并另行约定授权费、单件费用、销售额分成或利润分成。未获授权的商业使用，作者保留要求停止使用、下架、追究侵权责任及索取相应授权费用或损害赔偿的权利。完整条款见 [`LICENSE.md`](LICENSE.md)。
+
 ## 设计假设
 
 - FDM / PETG / 0.4 mm 喷嘴；底板为 `0.6 mm` 极薄版本，约对应 0.2 mm 层高的 3 层实体，不是单层空壳。
 - T 形压边每侧内收 `1.3 mm`，压边厚 `0.8 mm`；相邻 15 mm 行距滑道共用 `3.2 mm` 分隔墙，目标为普通 PETG、0.4 mm 喷嘴、无支撑打印。
 - 页面平放打印，设计目标是不使用支撑。
+- 页面最外圈增加连续圆角围墙，平面内墙厚 `2.0 mm`、高度与 T 形滑道最高点一致；编带滑道直接延伸到外墙内侧，不再额外设置右端挡块。
 - 载带默认按 8 mm 压纹塑料带估算：宽度 8 mm、最大凸包高度 1.8 mm。
 - 双侧 T 形限位是正式页面默认结构；单侧 7 形只用于对照测试片。
 - 装订孔默认采用 A5 六孔制式，孔径 `5.5 mm`，孔中心距左边 `6.5 mm`，纵向位置为 `32 / 51 / 70 / 140 / 159 / 178 mm`；参数可在 `src/params.scad` 调整。
@@ -26,25 +35,25 @@
 OPENSCAD=/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_tape_page_v3.stl \
+  -o output/3d-print/0603_tape_page_v3_perimeter.stl \
   src/0603_tape_page.scad
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_fit_coupon_dual_t_v3.stl \
+  -o output/3d-print/0603_fit_coupon_dual_t_v3_perimeter.stl \
   src/0603_fit_coupon_dual_t.scad
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_fit_coupon_single_7_v3.stl \
+  -o output/3d-print/0603_fit_coupon_single_7_v3_perimeter.stl \
   src/0603_fit_coupon_single_7.scad
 ```
 
 编带防脱加强版 v3 输出：
 
 ```text
-output/3d-print/0603_tape_page_v3.stl
-output/3d-print/0603_tape_page_v3_x1c_safe.stl
-output/3d-print/0603_fit_coupon_dual_t_v3.stl
-output/3d-print/0603_fit_coupon_single_7_v3.stl
+output/3d-print/0603_tape_page_v3_perimeter.stl
+output/3d-print/0603_tape_page_v3_perimeter_x1c_safe.stl
+output/3d-print/0603_fit_coupon_dual_t_v3_perimeter.stl
+output/3d-print/0603_fit_coupon_single_7_v3_perimeter.stl
 ```
 
 ## 打印前检查

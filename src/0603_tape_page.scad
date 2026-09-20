@@ -1,9 +1,9 @@
-// 0603 编带收纳活页页 v1
+// 0603 编带收纳活页页 v3 perimeter
 //
 // 机械契约：
 // - FDM / PETG；页面平放，底面贴打印平台，设计目标为无支撑打印。
 // - 页面没有分型面、螺钉或密封件；编带从每条滑道左端的开放装入窗口放入。
-// - 双侧 T 形限位覆盖编带两侧边缘；入口横挡防止编带自行滑回，右端止挡防止冲出。
+// - 双侧 T 形限位覆盖编带两侧边缘；入口横挡防止编带自行滑回，外圈围墙承担末端止挡。
 // - 载带尺寸为可调包络，默认按 8 mm 压纹塑料带的保守初值建模。
 
 include <params.scad>;
@@ -16,7 +16,9 @@ function lane_outer_width() = channel_clear_width() + 2 * rail_stem_width;
 function rail_stem_height() = tape_height + top_clearance;
 function rail_total_height() = rail_stem_height() + rail_cap_thickness;
 function track_start_x() = binding_margin + label_column_width + track_gap_after_label;
-function track_end_x(page_w = page_width) = page_w - right_edge_margin;
+function track_end_x(page_w = page_width) =
+    page_w - (perimeter_wall_enabled ? perimeter_wall_inset + perimeter_wall_width : right_edge_margin) +
+        (perimeter_wall_enabled ? eps : 0);
 function row_center(index, page_h = page_height, count = lane_count, pitch = lane_pitch) =
     (page_h - (count - 1) * pitch) / 2 + index * pitch;
 function binding_hole_y(index, page_h = page_height, count = binding_hole_count, pitch = binding_hole_pitch) =
@@ -24,14 +26,58 @@ function binding_hole_y(index, page_h = page_height, count = binding_hole_count,
         ? binding_hole_positions[index]
         : (page_h - (count - 1) * pitch) / 2 + index * pitch;
 
+module rounded_profile(w, h, r) {
+    hull() {
+        translate([r, r]) circle(r = r);
+        translate([w - r, r]) circle(r = r);
+        translate([w - r, h - r]) circle(r = r);
+        translate([r, h - r]) circle(r = r);
+    }
+}
+
 module rounded_plate(w, h, r, z) {
     linear_extrude(height = z)
-        hull() {
-            translate([r, r]) circle(r = r);
-            translate([w - r, r]) circle(r = r);
-            translate([w - r, h - r]) circle(r = r);
-            translate([r, h - r]) circle(r = r);
+        rounded_profile(w, h, r);
+}
+
+module reinforced_plate(
+    w,
+    h,
+    radius,
+    base_t = base_thickness,
+    with_perimeter = perimeter_wall_enabled
+) {
+    wall_h = max(base_t, perimeter_wall_height);
+    inner_offset = perimeter_wall_inset + perimeter_wall_width;
+    inner_w = w - 2 * inner_offset;
+    inner_h = h - 2 * inner_offset;
+    inner_radius = max(0.5, radius - inner_offset);
+
+    // 将围墙与底板合并为一个连续实体：底板保留完整，只有底板以上的
+    // 中央区域被挖空，从而避免独立墙体与底板重叠造成非流形接缝。
+    if (with_perimeter) {
+        difference() {
+            rounded_plate(w, h, radius, wall_h);
+            translate([inner_offset, inner_offset, base_t])
+                linear_extrude(height = max(eps, wall_h - base_t + eps))
+                    rounded_profile(inner_w, inner_h, inner_radius);
         }
+    } else {
+        rounded_plate(w, h, radius, base_t);
+    }
+}
+
+module binding_spine_wall(
+    h,
+    x0 = binding_spine_wall_x,
+    wall_w = binding_spine_wall_width,
+    wall_h = perimeter_wall_height
+) {
+    // 放在圆孔列内侧，孔本身仍保持完整通孔；上下端与外圈围墙重叠连接。
+    wall_z = max(0, base_thickness);
+    wall_height = max(eps, wall_h - wall_z);
+    translate([x0, 0, wall_z])
+        cube([wall_w, h, wall_height]);
 }
 
 module label_recess_cut(
@@ -179,9 +225,11 @@ module lane(
         }
     }
 
-    // 右端止挡与导轨连接，防止编带向前冲出。
-    translate([x1 - end_stop_t, y0, base_t - eps])
-        cube([end_stop_t, outer_w, total_h + eps]);
+    // 有围墙时由页面最外圈直接承担末端止挡；无围墙时保留独立右端挡块。
+    if (end_stop_t > 0) {
+        translate([x1 - end_stop_t, y0, base_t - eps])
+            cube([end_stop_t, outer_w, total_h + eps]);
+    }
 }
 
 module base_with_label_recess(
@@ -191,10 +239,17 @@ module base_with_label_recess(
     radius,
     count,
     pitch,
-    add_binding_holes = false
+    add_binding_holes = false,
+    add_perimeter_wall = false
 ) {
     difference() {
-        rounded_plate(w, h, radius, base_t);
+        reinforced_plate(
+            w,
+            h,
+            radius,
+            base_t = base_t,
+            with_perimeter = add_perimeter_wall
+        );
 
         if (add_binding_holes) {
             for (i = [0 : binding_hole_count - 1]) {
@@ -231,14 +286,24 @@ module page_0603() {
             corner_radius,
             lane_count,
             lane_pitch,
-            add_binding_holes = binding_holes_enabled
+            add_binding_holes = binding_holes_enabled,
+            add_perimeter_wall = perimeter_wall_enabled
         );
+        if (binding_spine_wall_enabled) {
+            binding_spine_wall(page_height);
+        }
 
         for (i = [0 : lane_count - 1]) {
             cy = row_center(i);
             label_frame(cy);
             label_entry_latch(cy);
-            lane(x0, x1, cy, profile = rail_profile);
+            lane(
+                x0,
+                x1,
+                cy,
+                profile = rail_profile,
+                end_stop_t = perimeter_wall_enabled ? 0 : end_stop_thickness
+            );
         }
     }
 }
@@ -250,7 +315,9 @@ module fit_coupon(profile = "dual_t") {
     coupon_pitch = 15;
     // 测试片也必须沿用页面的标签列结束位置，避免滑道压到标签槽。
     coupon_x0 = track_start_x();
-    coupon_x1 = coupon_w - 5;
+    coupon_x1 = coupon_w -
+        (perimeter_wall_enabled ? perimeter_wall_inset + perimeter_wall_width : 5) +
+        (perimeter_wall_enabled ? eps : 0);
 
     union() {
         base_with_label_recess(
@@ -260,14 +327,21 @@ module fit_coupon(profile = "dual_t") {
             corner_radius,
             coupon_count,
             coupon_pitch,
-            add_binding_holes = false
+            add_binding_holes = false,
+            add_perimeter_wall = perimeter_wall_enabled
         );
 
         for (i = [0 : coupon_count - 1]) {
             cy = row_center(i, coupon_h, coupon_count, coupon_pitch);
             label_frame(cy);
             label_entry_latch(cy);
-            lane(coupon_x0, coupon_x1, cy, profile = profile);
+            lane(
+                coupon_x0,
+                coupon_x1,
+                cy,
+                profile = profile,
+                end_stop_t = perimeter_wall_enabled ? 0 : end_stop_thickness
+            );
         }
     }
 }

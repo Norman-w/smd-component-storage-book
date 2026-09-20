@@ -18,6 +18,10 @@ binding_hole_center_x = 6.5;
 binding_margin = 16;
 binding_hole_pattern_enabled = true;
 binding_hole_positions = [32, 51, 70, 140, 159, 178];
+// 活页孔列内侧的加强脊：不遮挡孔，和上下围墙连接以提高装订边刚度。
+binding_spine_wall_enabled = true;
+binding_spine_wall_width = 2.0;
+binding_spine_wall_x = binding_hole_center_x + binding_hole_diameter / 2 + 1.0;
 
 // 标签与滑道布局
 lane_count = 13;
@@ -52,6 +56,11 @@ rail_stem_width = (lane_pitch - (tape_width + 2 * tape_side_clearance)) / 2;
 // 每侧向内压住编带 1.3 mm；顶部有效开口约为 6.0 mm。
 rail_cap_overlap = 1.3;
 rail_cap_thickness = 0.8;
+// 页面最外圈连续围墙：从纸张边缘向内占 2 mm；高度与当前 T 形滑道最高点一致。
+perimeter_wall_enabled = true;
+perimeter_wall_width = 2.0;
+perimeter_wall_inset = 0.0;
+perimeter_wall_height = base_thickness + tape_height + top_clearance + rail_cap_thickness;
 entry_stop_thickness = 1.2;
 // 横挡后保留 6 mm 装入/取料窗口；T 形压边从其后立即开始。
 entry_notch_length = 6.0;

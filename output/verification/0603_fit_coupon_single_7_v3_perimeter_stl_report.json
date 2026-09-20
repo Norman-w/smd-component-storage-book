@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_fit_coupon_single_7_v3_perimeter.stl",
+  "format": "binary",
+  "units": "unknown",
+  "triangleCount": 542,
+  "uniqueVertexCount": 259,
+  "bounds": {
+    "min": [
+      0.0,
+      0.1468304544687271,
+      0.0
+    ],
+    "max": [
+      140.0,
+      74.8531723022461,
+      3.450000047683716
+    ],
+    "size": [
+      140.0,
+      74.70634184777737,
+      3.450000047683716
+    ]
+  },
+  "surfaceArea": 27165.158066423042,
+  "signedVolume": 12262.051176914914,
+  "volume": 12262.051176914914,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}

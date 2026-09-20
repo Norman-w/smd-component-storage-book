@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_tape_page_v3_perimeter_x1c_safe.stl",
+  "format": "binary",
+  "units": "unknown",
+  "triangleCount": 2164,
+  "uniqueVertexCount": 1026,
+  "bounds": {
+    "min": [
+      54.0,
+      23.0,
+      0.0
+    ],
+    "max": [
+      202.0,
+      233.0,
+      3.450000047683716
+    ],
+    "size": [
+      148.0,
+      210.0,
+      3.450000047683716
+    ]
+  },
+  "surfaceArea": 86921.81081784415,
+  "signedVolume": 49997.26599914084,
+  "volume": 49997.26599914084,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}
