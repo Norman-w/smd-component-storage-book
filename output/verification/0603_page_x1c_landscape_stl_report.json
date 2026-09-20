@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_tape_page_v1_x1c_landscape.stl",
+  "format": "ascii",
+  "units": "unknown",
+  "triangleCount": 6126,
+  "uniqueVertexCount": 3013,
+  "bounds": {
+    "min": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max": [
+      250.0,
+      176.0,
+      3.5500000000000003
+    ],
+    "size": [
+      250.0,
+      176.0,
+      3.5500000000000003
+    ]
+  },
+  "surfaceArea": 121310.55423198921,
+  "signedVolume": 41028.38638162412,
+  "volume": 41028.38638162412,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}
