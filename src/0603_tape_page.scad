@@ -1,9 +1,10 @@
-// 0603 编带收纳活页页 v4：右侧标签入口 + 装订边满铺加强
+// 0603 编带收纳活页页 v5：1 mm 共用隔档 + 加厚右侧标签槽
 //
 // 机械契约：
 // - FDM / PETG；页面平放，底面贴打印平台，设计目标为无支撑打印。
 // - 页面没有分型面、螺钉或密封件；标签从右向左插入，编带从每条滑道左端的开放装入窗口放入。
-// - 双侧 T 形限位覆盖编带两侧边缘；入口横挡防止编带自行滑回，外圈围墙承担末端止挡。
+// - 双侧 T 形限位覆盖编带两侧边缘；轨道支脚与隔档最薄处约 1 mm。
+// - 入口横挡防止编带自行滑回，外圈围墙承担末端止挡。
 // - 载带尺寸为可调包络，默认按 8 mm 压纹塑料带的保守初值建模。
 
 include <params.scad>;
@@ -106,12 +107,12 @@ module label_recess_cut(
     recess_depth = label_recess_depth
 ) {
     pocket_w = label_w + 2 * label_clear;
-    pocket_h = label_h + 2 * label_clear +
-        2 * (label_frame_thickness + label_lip_inset);
+    inner_h = label_h + 2 * label_clear;
 
-    // 从页面右侧开口，底部仍然保留，不形成穿透孔；左端贴住装订加强脊。
-    translate([x0, cy - pocket_h / 2, base_t - recess_depth])
-        cube([pocket_w + eps, pocket_h, recess_depth + 2 * eps]);
+    // 只在标签实际可见/可插入的内窗口下挖浅槽，保留压边和相邻标签
+    // 共用隔档下方的底板，避免行距压缩后出现悬空薄桥。
+    translate([x0, cy - inner_h / 2, base_t - recess_depth])
+        cube([pocket_w + eps, inner_h, recess_depth + 2 * eps]);
 }
 
 module label_frame(
@@ -247,6 +248,34 @@ module lane(
     }
 }
 
+module shared_lane_partition(
+    x0,
+    x1,
+    separator_cy,
+    pitch = lane_pitch,
+    tape_w = tape_width,
+    tape_side_clear = tape_side_clearance,
+    stem_w = rail_stem_width,
+    top_w = lane_partition_top_width,
+    base_t = base_thickness,
+    partition_h = rail_stem_height(),
+    overlap = lane_partition_overlap
+) {
+    clear_w = tape_w + 2 * tape_side_clear;
+    rail_outer_w = clear_w + 2 * stem_w;
+    gap_w = pitch - rail_outer_w;
+    base_w = gap_w + 2 * overlap;
+    z0 = max(0, base_t - eps);
+    z1 = z0 + partition_h + eps;
+
+    // 相邻轨道底部连续相接，用约 1 mm 的共用薄墙填满中间。
+    // 采用单一连续实体，避免多个相切渐缩多面体在 STL 中留下重合面。
+    if (x1 > x0 && gap_w > 0 && top_w > 0 && base_w >= top_w) {
+        translate([x0, separator_cy - base_w / 2, z0])
+            cube([x1 - x0, base_w, z1 - z0]);
+    }
+}
+
 module base_with_label_recess(
     w,
     h,
@@ -313,6 +342,16 @@ module page_0603() {
             binding_spine_wall(page_height);
         }
 
+        if (lane_partition_enabled) {
+            for (i = [0 : lane_count - 2]) {
+                shared_lane_partition(
+                    x0,
+                    x1,
+                    (row_center(i) + row_center(i + 1)) / 2
+                );
+            }
+        }
+
         for (i = [0 : lane_count - 1]) {
             cy = row_center(i);
             label_frame(cy);
@@ -332,7 +371,7 @@ module fit_coupon(profile = "dual_t") {
     coupon_w = 140;
     coupon_h = 75;
     coupon_count = 3;
-    coupon_pitch = 15;
+    coupon_pitch = lane_pitch;
     // 测试片也必须沿用页面的标签列结束位置，避免滑道压到标签槽。
     coupon_x0 = track_start_x();
     coupon_x1 = coupon_w -
@@ -362,6 +401,18 @@ module fit_coupon(profile = "dual_t") {
                 profile = profile,
                 end_stop_t = perimeter_wall_enabled ? 0 : end_stop_thickness
             );
+        }
+
+        if (lane_partition_enabled) {
+            for (i = [0 : coupon_count - 2]) {
+                shared_lane_partition(
+                    coupon_x0,
+                    coupon_x1,
+                    (row_center(i, coupon_h, coupon_count, coupon_pitch) +
+                        row_center(i + 1, coupon_h, coupon_count, coupon_pitch)) / 2,
+                    pitch = coupon_pitch
+                );
+            }
         }
     }
 }

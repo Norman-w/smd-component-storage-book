@@ -1,4 +1,4 @@
-// 0603 编带收纳页 v3 参数
+// 0603 编带收纳页 v5 参数
 // 单位：mm；默认按 A5 纵向页面、PETG、0.4 mm 喷嘴、平放无支撑打印。
 
 // 页面：ISO A5 纵向比例；比 B5 更紧凑，适合常见活页夹系统。
@@ -28,18 +28,19 @@ binding_full_fill_enabled = true;
 binding_full_fill_until_x = binding_spine_wall_x + binding_spine_wall_width;
 
 // 标签与滑道布局
-lane_count = 13;
-lane_pitch = 15;
+// 25×9 mm 标签仍保留足够开口；利用相邻标签共享的水平隔档压缩行距。
+lane_count = 17;
+lane_pitch = 11.6;
 label_width = 25;
 label_height = 9;
 label_clearance = 0.4;
-label_recess_depth = 0.25;
-label_frame_thickness = 0.8;
+label_recess_depth = 0.35;
+label_frame_thickness = 1.0;
 // 只增加压边覆盖量，不改变标签纸本身的 25 × 9 mm 尺寸。
-// 实际压边宽度 = label_frame_thickness + label_lip_inset = 2.6 mm。
-// 在 15 mm 行距下接近上限，仍保留标签纸的 9.8 mm 入口高度。
+// 实际压边覆盖宽度 = label_frame_thickness + label_lip_inset = 2.8 mm。
+// 标签内窗口仍保留约 9.8 mm 高度；相邻标签由共用水平隔档分开。
 label_lip_inset = 1.8;
-label_lip_height = 0.7;
+label_lip_height = 0.9;
 // 左侧入口增加低斜台：标签推入时跨过，反向滑出时提供止退。
 label_entry_latch_length = 1.2;
 label_entry_latch_height = 0.35;
@@ -56,8 +57,11 @@ tape_side_clearance = 0.3;
 top_clearance = 0.25;
 
 // 限位结构
-// 由行距和内宽自动计算：相邻滑道直接共用分隔墙，不留缝。
-rail_stem_width = (lane_pitch - (tape_width + 2 * tape_side_clearance)) / 2;
+// 轨道支脚与相邻轨道之间的共用隔档最薄处均控制在约 1 mm。
+rail_stem_width = 1.0;
+lane_partition_enabled = true;
+lane_partition_top_width = 1.0;
+lane_partition_overlap = 0.02;
 // 每侧向内压住编带 1.3 mm；顶部有效开口约为 6.0 mm。
 rail_cap_overlap = 1.3;
 rail_cap_thickness = 0.8;
