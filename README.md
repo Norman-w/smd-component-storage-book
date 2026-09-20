@@ -5,6 +5,7 @@
 ## 设计假设
 
 - FDM / PETG / 0.4 mm 喷嘴；底板改为 `0.6 mm` 极薄版本，约对应 0.2 mm 层高的 3 层实体，不是单层空壳；大尺寸页面必须实测翘曲。
+- T 形压边每侧仅内收 `1.0 mm`，压边厚 `0.8 mm`；这是短悬挑，目标为普通 PETG、0.4 mm 喷嘴、无支撑打印。
 - 页面平放打印，设计目标是不使用支撑。
 - 载带默认按 8 mm 压纹塑料带估算：宽度 8 mm、最大凸包高度 1.8 mm。
 - 双侧 T 形限位是正式页面默认结构；单侧 7 形只用于对照测试片。
@@ -45,7 +46,7 @@ STL 导出后还需要检查包围盒、流形性、底面连续性和 T 形压�
 已准备好可直接在 Bambu Studio 打开的切片工程：
 
 ```text
-output/3d-print/0603_tape_page_v1_x1c_petg_quality.3mf
+output/3d-print/0603_tape_page_v1_x1c_petg_standard.3mf
 ```
 
 工程使用 Bambu Lab X1 Carbon、0.4 mm 喷嘴、PETG Basic 和纹理 PEI 板，并在工程内明确写入 `256 × 256 × 256 mm` 打印区及左下角 `18 × 28 mm` 校准避让区。页面通过 `src/0603_tape_page_x1c_safe.scad` 以 `40 / 3 mm` 的安全偏置放置，实际页面约为 `176 × 250 × 3.55 mm`，不会占用左下校准区。
