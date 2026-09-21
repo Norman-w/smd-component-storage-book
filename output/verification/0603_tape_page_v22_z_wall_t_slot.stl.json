@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_tape_page_v22_z_wall_t_slot.stl",
+  "format": "ascii",
+  "units": "unknown",
+  "triangleCount": 4584,
+  "uniqueVertexCount": 2282,
+  "bounds": {
+    "min": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max": [
+      148.0,
+      210.0,
+      3.45
+    ],
+    "size": [
+      148.0,
+      210.0,
+      3.45
+    ]
+  },
+  "surfaceArea": 93858.41088367814,
+  "signedVolume": 45156.800264367615,
+  "volume": 45156.800264367615,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}

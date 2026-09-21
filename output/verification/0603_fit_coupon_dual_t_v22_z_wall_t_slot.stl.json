@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl",
+  "format": "ascii",
+  "units": "unknown",
+  "triangleCount": 832,
+  "uniqueVertexCount": 418,
+  "bounds": {
+    "min": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max": [
+      140.0,
+      75.0,
+      3.45
+    ],
+    "size": [
+      140.0,
+      75.0,
+      3.45
+    ]
+  },
+  "surfaceArea": 28177.817710801544,
+  "signedVolume": 13262.809749992819,
+  "volume": 13262.809749992819,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}

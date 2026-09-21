@@ -1,10 +1,10 @@
 # 0603 编带收纳活页页
 
-当前版本是 ISO A5 纵向页面，外廓 `148 × 210 mm`，默认 18 条平行滑道。页面左侧带常见 A5 六孔圆孔列，标签槽为浅凹槽，底面保持完整。
+当前版本是 ISO A5 纵向页面，外廓 `148 × 210 mm`，默认 18 条平行滑道。页面左侧带常见 A5 六孔圆孔列，标签卡槽底面保持完整，卡槽由底板上方增高的 T 形墙体形成。
 
-当前源模型已进入编带防脱 v9：标签纸仍为 `25 × 9 mm`，主体上、下压边覆盖量约 `2.8 mm`，入口前 `3.0 mm` 由一侧完整压边形成凸字舌边，另一侧退让为约 `1.4 mm` 导入边，并按相邻行上下镜像交替；压边材料厚度 `1.0 mm`，标签凹槽深度 `0.35 mm`，不依赖胶粘。标签槽已镜像为右侧开口，标签从右向左插入，左端直接由活页孔内侧的整块加强高台止挡；标签槽向左移动后，释放出的空间全部让给 SMD 滑道。编带内宽约 `8.6 mm`，双侧 T 形压边每侧覆盖约 `1.3 mm`，顶部有效开口约 `6.0 mm`；相邻滑道用约 `0.8 mm` 共用薄墙直接相接，页面保持 18 条滑道。新版 STL 使用 `_v9_convex_label_mouth` 文件名，先打印测试片确认实际插入和防脱手感。
+当前源模型为 v22：标签纸仍为 `25 × 9 mm`，从右向左插入；底板不再挖浅槽，标签上下两侧与编带槽共用“下宽上窄”的 T 形卡口。入口压边的外侧边保持直线，只让朝标签内侧的边收斜，俯视轮廓为“个”字形而不是两边都收窄的 Y 形。编带内宽约 `8.6 mm`，双侧 T 形压边每侧覆盖约 `1.3 mm`，顶部有效开口约 `6.0 mm`；相邻滑道用约 `0.8 mm` 共用薄墙直接相接，页面保持 18 条滑道。
 
-当前工作树在 v9 基础上保留连续外圈围墙：围墙高约 `3.45 mm`、平面内墙厚 `2.0 mm`，从页面最外缘向内形成加强边，既帮助装订后保持页面平整，也作为每条编带滑道的右端止挡。左侧装订区域从页面边缘到孔列内侧加强脊全部满铺到同一高度，孔洞贯穿高台，以提升装订孔抗撕裂能力。新版导出文件使用 `_v9_convex_label_mouth` 文件名。
+当前工作树保留连续外圈围墙：围墙高约 `3.45 mm`、平面内墙厚 `2.0 mm`，从页面最外缘向内形成加强边，既帮助装订后保持页面平整，也作为每条编带滑道的右端止挡。左侧装订区域从页面边缘到孔列内侧加强脊全部满铺到同一高度，孔洞贯穿高台，以提升装订孔抗撕裂能力。新版导出文件使用 `_v22_z_wall_t_slot` 文件名。
 
 ## 使用与商业授权
 
@@ -22,7 +22,7 @@
 - 双侧 T 形限位是正式页面默认结构；单侧 7 形只用于对照测试片。
 - 装订孔默认采用 A5 六孔制式，孔径 `5.5 mm`，孔中心距左边 `6.5 mm`，纵向位置为 `32 / 51 / 70 / 140 / 159 / 178 mm`；参数可在 `src/params.scad` 调整。
 - 标签槽右边缘与对应滑道入口约留 `1 mm`，纸片标签从右向左插入，左端由装订孔旁加强高台止挡，标签槽挪出的空间让给编带滑道。
-- 标签纸仍按 `25 × 9 mm` 使用；标签槽不放大纸片尺寸，主体上、下压边覆盖量约 `2.8 mm`，右侧入口前 `3.0 mm` 由一侧完整压边形成凸字舌边，另一侧退让为约 `1.4 mm` 导入边，并按相邻行上下镜像交替；压边材料厚 `1.0 mm`，凹槽深度 `0.35 mm`，入口另有 `0.35 mm` 低斜台止退，标签不需要胶粘。相邻标签共用水平隔档，主体标签窗口仍保留约 `9.8 mm` 高度。
+- 标签纸仍按 `25 × 9 mm` 使用；标签卡槽不削薄 `0.6 mm` 底板，支脚从底板顶面向上增高，标签下方有效容纳高度约 `0.7 mm`。主体上、下压边覆盖量约 `2.8 mm`，每格右侧入口前 `4.5 mm` 采用上下镜像的浅压边；外侧边保持直线，只收窄朝标签内侧的边。相邻标签共用水平隔档，主体标签窗口仍保留约 `9.8 mm` 高度。
 - 滑道入口改为短装入豁口：横挡后的实际窗口约 `6 mm`，左端横挡高度降为 `1.8 mm`，T 形压边从其后立即开始，兼顾推进手感和防掉出。
 - 编带槽内宽约 `8.6 mm`，顶部有效开口约 `6.0 mm`，优先加强编带防脱；槽间不留空白，直接共用约 `0.8 mm` 薄隔档，共容纳 18 条滑道。
 - 所有载带包络和配合间隙集中在 `src/params.scad`。
@@ -35,25 +35,24 @@
 OPENSCAD=/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_tape_page_v9_convex_label_mouth.stl \
+  -o output/3d-print/0603_tape_page_v22_z_wall_t_slot.stl \
   src/0603_tape_page.scad
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_fit_coupon_dual_t_v9_convex_label_mouth.stl \
-  src/0603_fit_coupon_dual_t.scad
+  -o output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl \
+  -D 'model_selector="fit_dual_t"' src/0603_tape_page.scad
 
 "$OPENSCAD" --export-format binstl \
-  -o output/3d-print/0603_fit_coupon_single_7_v9_convex_label_mouth.stl \
-  src/0603_fit_coupon_single_7.scad
+  -D 'model_selector="fit_single_7"' \
+  -o output/3d-print/0603_fit_coupon_single_7_v22_z_wall_t_slot.stl \
+  src/0603_tape_page.scad
 ```
 
-右侧标签入口凸字镜像 + 装订边满铺加强 + 0.8 mm 薄隔档版 v9 输出：
+底板完整 + 标签上凸 T 形墙 + 单侧内边斜入口 + 装订边满铺加强版 v22 输出：
 
 ```text
-output/3d-print/0603_tape_page_v9_convex_label_mouth.stl
-output/3d-print/0603_tape_page_v9_convex_label_mouth_x1c_safe.stl
-output/3d-print/0603_fit_coupon_dual_t_v9_convex_label_mouth.stl
-output/3d-print/0603_fit_coupon_single_7_v9_convex_label_mouth.stl
+output/3d-print/0603_tape_page_v22_z_wall_t_slot.stl
+output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl
 ```
 
 ## 打印前检查
@@ -80,4 +79,4 @@ output/3d-print/0603_tape_page_v1_x1c_petg_standard.3mf
 - 默认/外墙加速度 `500 mm/s²`，首层 `300 mm/s²`，风扇范围 `10–40%`，最大体积流量 `8 mm³/s`。
 - 关闭 skirt，外裙边改为 `1 mm`；A5 页面在 X1C 床面上有充足边缘余量，可按首层观察结果决定是否加 brim。
 
-该 `.3mf` 是上一版 B5 工程，不能代表当前 A5 v9 几何；正式打印前应在 Bambu Studio 中导入新的 v9 STL，确认 X1C 当前装的是干燥 PETG、纹理 PEI 板已清洁，并先用双 T 测试片确认实际编带和右侧标签配合。
+该 `.3mf` 是上一版 B5 工程，不能代表当前 A5 v22 几何；正式打印前应在 Bambu Studio 中导入新的 v22 STL，确认 X1C 当前装的是干燥 PETG、纹理 PEI 板已清洁，并先用双 T 测试片确认实际编带和右侧标签配合。

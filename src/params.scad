@@ -1,4 +1,4 @@
-// 0603 编带收纳页 v9 参数
+// 0603 编带收纳页 v22 参数
 // 单位：mm；默认按 A5 纵向页面、PETG、0.4 mm 喷嘴、平放无支撑打印。
 
 // 页面：ISO A5 纵向比例；比 B5 更紧凑，适合常见活页夹系统。
@@ -34,26 +34,39 @@ lane_pitch = 11.0;
 label_width = 25;
 label_height = 9;
 label_clearance = 0.4;
-label_recess_depth = 0.35;
-label_frame_thickness = 1.0;
-// 只增加压边覆盖量，不改变标签纸本身的 25 × 9 mm 尺寸。
-// 实际压边覆盖宽度 = label_frame_thickness + label_lip_inset = 2.8 mm。
-// 标签内窗口仍保留约 9.8 mm 高度；相邻标签由共用水平隔档分开。
-label_lip_inset = 1.8;
-label_lip_height = 0.9;
-// 标签从右侧插入时，入口前 3 mm 采用浅压边，形成更明显的导入喇叭口；
-// 通过后段完整压边保持标签防脱。这里的深度是沿页面横向的压边厚度。
-label_entry_relief_length = 3.0;
+// 标签槽不再从底板顶面向下挖；标签直接落在完整底板上，
+// 通过向上增加 T 形导轨墙体来形成卡槽。
+label_recess_depth = 0.0;
+// 标签槽直接沿用编带槽的截面参数：窄支脚 0.8 mm，顶部横梁
+// 向槽内压入 1.3 mm。标签底部通道仍按 9.8 mm 留量设计。
+label_frame_thickness = 0.8;
+label_lip_inset = 0;
+// 标签 T 导轨与编带导轨使用同一压边厚度；标签下方有效容纳高度
+// 单独放宽到 0.7 mm，可容纳较厚纸卡、覆膜卡或多层标签。
+label_stem_width = 0.8;
+label_cap_overlap = 1.3;
+label_cap_thickness = 0.8;
+label_card_clear_height = 0.7;
+label_lip_height = label_card_clear_height + label_cap_thickness;
+// 标签从右侧插入时，入口前 4.5 mm 采用上下镜像的浅压边，
+// 形成真正的“八字口”：右侧开口更宽，向左过渡到完整凸压边。
+// 这里的深度是沿页面横向的压边厚度。
+label_entry_relief_length = 4.5;
 label_entry_frame_depth = 1.4;
-// 相邻标签的入口上下镜像交替：一侧保留完整压边形成凸舌，
-// 另一侧退让形成导入空间；不再把两侧都削成凹口。
-// 左侧入口增加低斜台：标签推入时跨过，反向滑出时提供止退。
-label_entry_latch_length = 1.2;
-label_entry_latch_height = 0.35;
-// 标签槽结束后只留 1 mm 的结构间隙，标签直接贴近对应滑道入口。
+// XY 俯视轮廓的单尖点保留 0.35 mm 平口，避免零厚度尖端和非流形面；
+// 这只是标签入口轮廓，编带滑道的 YZ 截面 T 形不受影响。
+label_entry_point_depth = 0.35;
+// 标签入口只收窄靠标签内侧的压边，外侧边线保持直线；
+// 这样相邻墙顶形成“个”字形，而不是两侧都收窄的“Y”字形。
+label_entry_inner_edge_only = true;
+// 每个标签格的入口上下镜像形成八字口：两侧都是连续的凸压边，
+// 右端浅、左端深；不再用相邻行交错或凹进去的阶梯表达入口。
+// 标签入口不再使用中央竖向止退斜台，防止俯视图出现多余挡条；
+// 标签由上下 T 形压边自身卡住。
+// 标签槽结束后保留 2 mm 的结构间隙，标签直接从隔墙侧进入。
 // 标签槽镜像到右侧开口，从右向左插入；左端止档使用装订边加强脊。
 label_column_width = label_width + 2 * label_clearance;
-track_gap_after_label = 1;
+track_gap_after_label = 2.0;
 right_edge_margin = 3;
 
 // 8 mm 压纹塑料载带的初始包络；拿到实物后只需调整这些参数。
