@@ -109,6 +109,17 @@ output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl
 
 整页 12 mm 标签变体同样为 `148 × 210 × 3.45 mm`，并已通过封闭流形检查。
 
+### X1C 直接打印工程
+
+为避免 Bambu Studio 导入 STL 后把页面放进左下角校准避让区，另提供同一几何体的 X1C 安全坐标包装版：页面位于 `x=54..202 mm`、`y=23..233 mm`，几何包围盒仍为 `148 × 210 × 3.45 mm`。
+
+```text
+output/3d-print/0603_tape_page_16mm_label12_x1c_safe_v1.stl
+output/3d-print/0603_tape_page_16mm_label12_x1c_petg_v1.3mf
+```
+
+3MF 已按 Bambu Lab X1 Carbon、0.4 mm 喷嘴、0.20 mm Standard、Bambu PETG Basic、纹理 PEI 板切片；发送到打印机时，在 AMS 中把普通 PETG 映射到第 3 或第 4 槽。
+
 ## 打印前检查
 
 先打印测试片，用实际 0603 编带验证插入、竖直防脱、镊子取料和 `25 × 9 mm` 标签插入。确认后再打印整页。PETG 大面积平板建议使用干燥耗材、纹理 PEI，并按切片结果决定是否加小幅 brim。
