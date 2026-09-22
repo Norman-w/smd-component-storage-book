@@ -57,57 +57,75 @@ output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl
 
 ## 16 mm 编带变体
 
-16 mm 版不改默认的 8 mm 页面参数，导出时通过命令行覆盖三个版型参数：
+16 mm 版采用紧凑共墙布局，修正了旧版每格之间出现额外空白隔道的问题：
 
-- 编带宽度 `16 mm`
-- A5 页面 `10` 条滑道
-- 行距 `19.0 mm`
-- 编带外宽约 `18.2 mm`，相邻滑道保留标称约 `0.8 mm` 的共用薄墙；底部的 `0.04 mm` 合并余量只是为了避免 STL 共面接触，不是 8 mm 隔道
+- 编带有效内宽 `16 mm`
+- A5 页面 `11` 条滑道
+- 行距 `17.2 mm = 16.0 + 0.2 + 0.8 + 0.2`
+- `0.8 mm` 是相邻轨道共用的一条薄墙；不再在两条轨道之间额外插入第二条隔墙
+- 两侧各保留 `0.2 mm` 装入余量
 - 编带凸包高度仍按当前版本的 `1.8 mm`；若实物高度不同，只需调整 `tape_height`
 
 导出 16 mm 整页和双侧 T 测试片：
 
 ```sh
 "$OPENSCAD" --export-format binstl \
-  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
-  -o output/3d-print/0603_tape_page_16mm_v1.stl \
+  -D 'tape_width=16' -D 'tape_side_clearance=0.2' \
+  -D 'lane_count=11' -D 'lane_pitch=17.2' -D 'label_height=12' \
+  -o output/3d-print/0603_tape_page_16mm_label12_tight_v1.stl \
   src/0603_tape_page.scad
 
 "$OPENSCAD" --export-format binstl \
   -D 'model_selector="fit_dual_t"' \
-  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
-  -o output/3d-print/0603_fit_coupon_dual_t_16mm_v1.stl \
+  -D 'tape_width=16' -D 'tape_side_clearance=0.2' \
+  -D 'lane_count=11' -D 'lane_pitch=17.2' -D 'label_height=12' \
+  -o output/3d-print/0603_fit_coupon_dual_t_16mm_label12_tight_v1.stl \
   src/0603_tape_page.scad
 
 "$OPENSCAD" --export-format binstl \
   -D 'model_selector="fit_single_7"' \
-  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
-  -o output/3d-print/0603_fit_coupon_single_7_16mm_v1.stl \
+  -D 'tape_width=16' -D 'tape_side_clearance=0.2' \
+  -D 'lane_count=11' -D 'lane_pitch=17.2' -D 'label_height=12' \
+  -o output/3d-print/0603_fit_coupon_single_7_16mm_label12_tight_v1.stl \
   src/0603_tape_page.scad
 ```
 
-对应的 16 mm STL 均已在 `output/3d-print/`，整页包围盒为 `148 × 210 × 3.45 mm`，并通过封闭流形检查。
+对应的紧凑 16 mm STL 位于 `output/3d-print/`，整页包围盒为 `148 × 210 × 3.45 mm`，并通过封闭流形检查。
 
 ### 16 mm 编带 + 12 mm 标签变体
 
-针对 16 mm 编带，另提供标签横向宽度为 `12 mm` 的版本；标签沿插入方向的长度仍为 `25 mm`。这只覆盖 `label_height=12`，不会改变默认 8 mm 页面或普通 16 mm 页面。
+针对 16 mm 编带，平台发布版使用标签横向宽度 `12 mm`；标签沿插入方向的长度仍为 `25 mm`。这只覆盖 `label_height=12`，并使用紧凑的 `17.2 mm` 行距。
 
 ```sh
 "$OPENSCAD" --export-format binstl \
-  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
+  -D 'tape_width=16' -D 'tape_side_clearance=0.2' \
+  -D 'lane_count=11' -D 'lane_pitch=17.2' \
   -D 'label_height=12' \
-  -o output/3d-print/0603_tape_page_16mm_label12_v1.stl \
+  -o output/3d-print/0603_tape_page_16mm_label12_tight_v1.stl \
   src/0603_tape_page.scad
 
 "$OPENSCAD" --export-format binstl \
   -D 'model_selector="fit_dual_t"' \
-  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
+  -D 'tape_width=16' -D 'tape_side_clearance=0.2' \
+  -D 'lane_count=11' -D 'lane_pitch=17.2' \
   -D 'label_height=12' \
-  -o output/3d-print/0603_fit_coupon_dual_t_16mm_label12_v1.stl \
+  -o output/3d-print/0603_fit_coupon_dual_t_16mm_label12_tight_v1.stl \
   src/0603_tape_page.scad
 ```
 
 整页 12 mm 标签变体同样为 `148 × 210 × 3.45 mm`，并已通过封闭流形检查。
+
+## 平台发布的三种编带宽度
+
+平台草稿准备提供三份独立的整页 STL，避免用户误选宽度：
+
+| 编带有效内宽 | 标签卡 | 滑道数 / 行距 | 平台文件 |
+|---:|---:|---:|---|
+| 8 mm | 25 × 9 mm | 18 / 11.0 mm | `output/3d-print/0603_tape_page_8mm_label9_v1.stl` |
+| 12 mm | 25 × 12 mm | 15 / 13.2 mm | `output/3d-print/0603_tape_page_12mm_label12_v1.stl` |
+| 16 mm | 25 × 12 mm | 11 / 17.2 mm | `output/3d-print/0603_tape_page_16mm_label12_tight_v1.stl` |
+
+8 mm 和 12 mm 沿用已经确认/打印验证的页面；16 mm 使用紧凑共墙修正版。三种版本都是 A5、六孔、完整底板、连续外圈围墙和双侧 T 形编带限位。
 
 ## 当前打印验证版：12 mm 编带 + 12 mm 标签
 
@@ -131,11 +149,11 @@ output/3d-print/0603_fit_coupon_dual_t_12mm_label12_v1.stl
 为避免 Bambu Studio 导入 STL 后把页面放进左下角校准避让区，另提供同一几何体的 X1C 安全坐标包装版：页面位于 `x=54..202 mm`、`y=23..233 mm`，几何包围盒仍为 `148 × 210 × 3.45 mm`。
 
 ```text
-output/3d-print/0603_tape_page_16mm_label12_x1c_safe_v1.stl
-output/3d-print/0603_tape_page_16mm_label12_x1c_petg_v1.3mf
+src/0603_tape_page_16mm_label12_tight_x1c_safe.scad
+output/3d-print/0603_tape_page_16mm_label12_tight_v1.stl
 ```
 
-3MF 已按 Bambu Lab X1 Carbon、0.4 mm 喷嘴、0.20 mm Standard、Bambu PETG Basic、纹理 PEI 板切片；发送到打印机时，在 AMS 中把普通 PETG 映射到第 3 或第 4 槽。
+16 mm 紧凑版目前先提供已验证的 STL 和 X1C 安全坐标包装源文件；三种宽度的统一 3MF 工程待平台版本确认后再生成。打印时使用 Bambu Lab X1 Carbon、0.4 mm 喷嘴、0.20 mm Standard、普通 PETG、纹理 PEI 板；发送到打印机时可在 AMS 中把普通 PETG 映射到第 3 或第 4 槽。
 
 ## 打印前检查
 
