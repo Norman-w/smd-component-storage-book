@@ -109,6 +109,23 @@ output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl
 
 整页 12 mm 标签变体同样为 `148 × 210 × 3.45 mm`，并已通过封闭流形检查。
 
+## 当前打印验证版：12 mm 编带 + 12 mm 标签
+
+本次打印采用独立的 A5 版本：编带净宽按 `12 mm`，标签卡按 `25 × 12 mm`，页面共 `15` 条滑道，滑道中心距为 `13.2 mm`。中心距按 `12 mm` 有效空间、约 `0.8 mm` 共用隔墙和两侧合计 `0.4 mm` 装入余量计算；相邻滑道直接共墙，不再留无效空隙。
+
+该版本仍保留 A5 六孔装订、完整 `0.6 mm` 底板、上凸 T 形卡槽、连续 `2.0 mm` 外圈加强墙和无支撑平放打印目标。整页包围盒为 `148 × 210 × 3.45 mm`，页面与双 T 测试片均通过封闭流形检查。X1C 直接打印工程使用普通 PETG、纹理 PEI 板和 `0.20 mm` 层高。
+
+对应文件：
+
+```text
+output/3d-print/0603_tape_page_12mm_label12_v1.stl
+output/3d-print/0603_tape_page_12mm_label12_x1c_safe_v1.stl
+output/3d-print/0603_tape_page_12mm_label12_x1c_petg_v1.3mf
+output/3d-print/0603_fit_coupon_dual_t_12mm_label12_v1.stl
+```
+
+`_x1c_safe_v1.stl` 已将页面放到 X1C 床面安全区域；`.3mf` 是已切片的直接打印工程。当前版本先保留为独立输出，不改变 `src/params.scad` 中默认的 8 mm 编带参数。
+
 ### X1C 直接打印工程
 
 为避免 Bambu Studio 导入 STL 后把页面放进左下角校准避让区，另提供同一几何体的 X1C 安全坐标包装版：页面位于 `x=54..202 mm`、`y=23..233 mm`，几何包围盒仍为 `148 × 210 × 3.45 mm`。
