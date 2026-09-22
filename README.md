@@ -55,6 +55,60 @@ output/3d-print/0603_tape_page_v22_z_wall_t_slot.stl
 output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl
 ```
 
+## 16 mm 编带变体
+
+16 mm 版不改默认的 8 mm 页面参数，导出时通过命令行覆盖三个版型参数：
+
+- 编带宽度 `16 mm`
+- A5 页面 `10` 条滑道
+- 行距 `19.0 mm`
+- 编带外宽约 `18.2 mm`，相邻滑道保留标称约 `0.8 mm` 的共用薄墙；底部的 `0.04 mm` 合并余量只是为了避免 STL 共面接触，不是 8 mm 隔道
+- 编带凸包高度仍按当前版本的 `1.8 mm`；若实物高度不同，只需调整 `tape_height`
+
+导出 16 mm 整页和双侧 T 测试片：
+
+```sh
+"$OPENSCAD" --export-format binstl \
+  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
+  -o output/3d-print/0603_tape_page_16mm_v1.stl \
+  src/0603_tape_page.scad
+
+"$OPENSCAD" --export-format binstl \
+  -D 'model_selector="fit_dual_t"' \
+  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
+  -o output/3d-print/0603_fit_coupon_dual_t_16mm_v1.stl \
+  src/0603_tape_page.scad
+
+"$OPENSCAD" --export-format binstl \
+  -D 'model_selector="fit_single_7"' \
+  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
+  -o output/3d-print/0603_fit_coupon_single_7_16mm_v1.stl \
+  src/0603_tape_page.scad
+```
+
+对应的 16 mm STL 均已在 `output/3d-print/`，整页包围盒为 `148 × 210 × 3.45 mm`，并通过封闭流形检查。
+
+### 16 mm 编带 + 12 mm 标签变体
+
+针对 16 mm 编带，另提供标签横向宽度为 `12 mm` 的版本；标签沿插入方向的长度仍为 `25 mm`。这只覆盖 `label_height=12`，不会改变默认 8 mm 页面或普通 16 mm 页面。
+
+```sh
+"$OPENSCAD" --export-format binstl \
+  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
+  -D 'label_height=12' \
+  -o output/3d-print/0603_tape_page_16mm_label12_v1.stl \
+  src/0603_tape_page.scad
+
+"$OPENSCAD" --export-format binstl \
+  -D 'model_selector="fit_dual_t"' \
+  -D 'tape_width=16' -D 'lane_count=10' -D 'lane_pitch=19.0' \
+  -D 'label_height=12' \
+  -o output/3d-print/0603_fit_coupon_dual_t_16mm_label12_v1.stl \
+  src/0603_tape_page.scad
+```
+
+整页 12 mm 标签变体同样为 `148 × 210 × 3.45 mm`，并已通过封闭流形检查。
+
 ## 打印前检查
 
 先打印测试片，用实际 0603 编带验证插入、竖直防脱、镊子取料和 `25 × 9 mm` 标签插入。确认后再打印整页。PETG 大面积平板建议使用干燥耗材、纹理 PEI，并按切片结果决定是否加小幅 brim。

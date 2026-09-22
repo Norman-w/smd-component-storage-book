@@ -1,0 +1,32 @@
+{
+  "path": "/Users/norman/SMD-Component-Storage-Book/output/3d-print/0603_fit_coupon_dual_t_16mm_label12_v1.stl",
+  "format": "binary",
+  "units": "unknown",
+  "triangleCount": 822,
+  "uniqueVertexCount": 413,
+  "bounds": {
+    "min": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max": [
+      140.0,
+      75.0,
+      3.450000047683716
+    ],
+    "size": [
+      140.0,
+      75.0,
+      3.450000047683716
+    ]
+  },
+  "surfaceArea": 28414.078874124592,
+  "signedVolume": 13343.20630934758,
+  "volume": 13343.20630934758,
+  "degenerateTriangleCount": 0,
+  "boundaryEdgeCount": 0,
+  "nonManifoldEdgeCount": 0,
+  "inconsistentOrientationEdgeCount": 0,
+  "watertightByEdgeTopology": true
+}
