@@ -115,17 +115,22 @@ output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl
 
 整页 12 mm 标签变体同样为 `148 × 210 × 3.45 mm`，并已通过封闭流形检查。
 
-## 平台发布的三种编带宽度
+## 平台发布的六种编带宽度
 
-平台草稿准备提供三份独立的整页 STL，避免用户误选宽度：
+平台草稿准备提供六份独立的整页 STL，避免用户误选宽度：
 
 | 编带有效内宽 | 标签卡 | 滑道数 / 行距 | 平台文件 |
 |---:|---:|---:|---|
 | 8 mm | 25 × 9 mm | 18 / 11.0 mm | `output/3d-print/0603_tape_page_8mm_label9_v1.stl` |
 | 12 mm | 25 × 12 mm | 15 / 13.2 mm | `output/3d-print/0603_tape_page_12mm_label12_v1.stl` |
 | 16 mm | 25 × 12 mm | 11 / 17.2 mm | `output/3d-print/0603_tape_page_16mm_label12_tight_v1.stl` |
+| 24 mm | 25 × 12 mm | 8 / 25.2 mm | `output/3d-print/0603_tape_page_24mm_label12_v1.stl` |
+| 32 mm | 25 × 12 mm | 6 / 33.2 mm | `output/3d-print/0603_tape_page_32mm_label12_v1.stl` |
+| 44 mm | 25 × 12 mm | 4 / 45.2 mm | `output/3d-print/0603_tape_page_44mm_label12_v1.stl` |
 
-8 mm 和 12 mm 沿用已经确认/打印验证的页面；16 mm 使用紧凑共墙修正版。三种版本都是 A5、六孔、完整底板、连续外圈围墙和双侧 T 形编带限位。
+8 mm 和 12 mm 沿用已经确认/打印验证的页面；16 / 24 / 32 / 44 mm 使用紧凑共墙布局。六种版本都是 A5、六孔、完整底板、连续外圈围墙和双侧 T 形编带限位。
+
+24 / 32 mm 版本暂按 `3.0 mm` 载带/料槽高度包络建模；44 mm 版本暂按 `3.6 mm` 高度包络建模，作为 ESP32-WROOM 类模组载带的初始版本。载带宽度、料槽深度和元件凸包高度仍需以实物测量为准，正式装满整卷前应先打印对应测试片。
 
 ## 当前打印验证版：12 mm 编带 + 12 mm 标签
 

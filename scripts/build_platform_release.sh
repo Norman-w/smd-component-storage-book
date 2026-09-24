@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build the three MakerWorld platform variants from the same v22 source.
+# Build the MakerWorld platform variants from the same v22 source.
 # Units are millimetres. The 12 mm STL is the previously printed/validated
 # package and is deliberately preserved; this script verifies that it exists.
 
@@ -59,6 +59,76 @@ fi
     -o "$OUTPUT_DIR/0603_fit_coupon_dual_t_16mm_label12_tight_v1.stl" \
     "$SOURCE"
 
+# Wider carrier tapes use the same compact common-wall rule:
+# pitch = tape width + 0.2 mm side clearance on each side + 0.8 mm shared wall.
+# The larger height envelopes keep the page useful for deeper pockets/modules:
+# 24/32 mm use a conservative 3.0 mm envelope; 44 mm is sized for the
+# approximately 3.1 mm ESP32-WROOM-class module plus 0.5 mm pocket allowance.
+# These are initial fit variants and still need confirmation against the actual
+# carrier tape and component cavity before committing a full reel.
+"$OPENSCAD_BIN" --export-format binstl \
+    -D 'tape_width=24' \
+    -D 'tape_height=3.0' \
+    -D 'tape_side_clearance=0.2' \
+    -D 'lane_count=8' \
+    -D 'lane_pitch=25.2' \
+    -D 'label_height=12' \
+    -o "$OUTPUT_DIR/0603_tape_page_24mm_label12_v1.stl" \
+    "$SOURCE"
+
+"$OPENSCAD_BIN" --export-format binstl \
+    -D 'model_selector="fit_dual_t"' \
+    -D 'tape_width=24' \
+    -D 'tape_height=3.0' \
+    -D 'tape_side_clearance=0.2' \
+    -D 'lane_count=8' \
+    -D 'lane_pitch=25.2' \
+    -D 'label_height=12' \
+    -o "$OUTPUT_DIR/0603_fit_coupon_dual_t_24mm_label12_v1.stl" \
+    "$SOURCE"
+
+"$OPENSCAD_BIN" --export-format binstl \
+    -D 'tape_width=32' \
+    -D 'tape_height=3.0' \
+    -D 'tape_side_clearance=0.2' \
+    -D 'lane_count=6' \
+    -D 'lane_pitch=33.2' \
+    -D 'label_height=12' \
+    -o "$OUTPUT_DIR/0603_tape_page_32mm_label12_v1.stl" \
+    "$SOURCE"
+
+"$OPENSCAD_BIN" --export-format binstl \
+    -D 'model_selector="fit_dual_t"' \
+    -D 'tape_width=32' \
+    -D 'tape_height=3.0' \
+    -D 'tape_side_clearance=0.2' \
+    -D 'lane_count=6' \
+    -D 'lane_pitch=33.2' \
+    -D 'label_height=12' \
+    -o "$OUTPUT_DIR/0603_fit_coupon_dual_t_32mm_label12_v1.stl" \
+    "$SOURCE"
+
+"$OPENSCAD_BIN" --export-format binstl \
+    -D 'tape_width=44' \
+    -D 'tape_height=3.6' \
+    -D 'tape_side_clearance=0.2' \
+    -D 'lane_count=4' \
+    -D 'lane_pitch=45.2' \
+    -D 'label_height=12' \
+    -o "$OUTPUT_DIR/0603_tape_page_44mm_label12_v1.stl" \
+    "$SOURCE"
+
+"$OPENSCAD_BIN" --export-format binstl \
+    -D 'model_selector="fit_dual_t"' \
+    -D 'tape_width=44' \
+    -D 'tape_height=3.6' \
+    -D 'tape_side_clearance=0.2' \
+    -D 'lane_count=4' \
+    -D 'lane_pitch=45.2' \
+    -D 'label_height=12' \
+    -o "$OUTPUT_DIR/0603_fit_coupon_dual_t_44mm_label12_v1.stl" \
+    "$SOURCE"
+
 python3 "$INSPECT_STL" "$OUTPUT_DIR/0603_tape_page_8mm_label9_v1.stl" \
     --require-watertight --output \
     "$REPORT_DIR/0603_tape_page_8mm_label9_v1_stl_report.json"
@@ -72,5 +142,26 @@ python3 "$INSPECT_STL" \
     "$OUTPUT_DIR/0603_fit_coupon_dual_t_16mm_label12_tight_v1.stl" \
     --require-watertight --output \
     "$REPORT_DIR/0603_fit_coupon_dual_t_16mm_label12_tight_v1_stl_report.json"
+python3 "$INSPECT_STL" "$OUTPUT_DIR/0603_tape_page_24mm_label12_v1.stl" \
+    --require-watertight --output \
+    "$REPORT_DIR/0603_tape_page_24mm_label12_v1_stl_report.json"
+python3 "$INSPECT_STL" \
+    "$OUTPUT_DIR/0603_fit_coupon_dual_t_24mm_label12_v1.stl" \
+    --require-watertight --output \
+    "$REPORT_DIR/0603_fit_coupon_dual_t_24mm_label12_v1_stl_report.json"
+python3 "$INSPECT_STL" "$OUTPUT_DIR/0603_tape_page_32mm_label12_v1.stl" \
+    --require-watertight --output \
+    "$REPORT_DIR/0603_tape_page_32mm_label12_v1_stl_report.json"
+python3 "$INSPECT_STL" \
+    "$OUTPUT_DIR/0603_fit_coupon_dual_t_32mm_label12_v1.stl" \
+    --require-watertight --output \
+    "$REPORT_DIR/0603_fit_coupon_dual_t_32mm_label12_v1_stl_report.json"
+python3 "$INSPECT_STL" "$OUTPUT_DIR/0603_tape_page_44mm_label12_v1.stl" \
+    --require-watertight --output \
+    "$REPORT_DIR/0603_tape_page_44mm_label12_v1_stl_report.json"
+python3 "$INSPECT_STL" \
+    "$OUTPUT_DIR/0603_fit_coupon_dual_t_44mm_label12_v1.stl" \
+    --require-watertight --output \
+    "$REPORT_DIR/0603_fit_coupon_dual_t_44mm_label12_v1_stl_report.json"
 
 printf 'Platform variants built and checked.\n'
