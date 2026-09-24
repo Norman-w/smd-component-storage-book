@@ -129,6 +129,49 @@ fi
     -o "$OUTPUT_DIR/0603_fit_coupon_dual_t_44mm_label12_v1.stl" \
     "$SOURCE"
 
+# B5 landscape long-track variants. The left binding edge remains the opening
+# edge; page width grows to 250 mm while page height becomes 176 mm. Six holes
+# keep the normal 19 mm pitch with a 70 mm gap between the two three-hole groups.
+# The 250 mm edge fits the X1C's nominal 256 mm axis with about 3 mm per side;
+# these pages should be placed deliberately and printed without a brim.
+B5_HOLE_POSITIONS='[15,34,53,123,142,161]'
+
+build_b5_page() {
+    local tape_w="$1"
+    local tape_h="$2"
+    local side_clear="$3"
+    local count="$4"
+    local pitch="$5"
+    local label_h="$6"
+    local output_name="$7"
+
+    "$OPENSCAD_BIN" --export-format binstl \
+        -D 'page_width=250' \
+        -D 'page_height=176' \
+        -D "binding_hole_positions=$B5_HOLE_POSITIONS" \
+        -D "tape_width=$tape_w" \
+        -D "tape_height=$tape_h" \
+        -D "tape_side_clearance=$side_clear" \
+        -D "lane_count=$count" \
+        -D "lane_pitch=$pitch" \
+        -D "label_height=$label_h" \
+        -o "$OUTPUT_DIR/$output_name" \
+        "$SOURCE"
+}
+
+build_b5_page 8 1.8 0.3 15 11.0 9 \
+    '0603_tape_page_b5_8mm_label9_v1.stl'
+build_b5_page 12 1.8 0.2 12 13.2 12 \
+    '0603_tape_page_b5_12mm_label12_v1.stl'
+build_b5_page 16 1.8 0.2 9 17.2 12 \
+    '0603_tape_page_b5_16mm_label12_tight_v1.stl'
+build_b5_page 24 3.0 0.2 6 25.2 12 \
+    '0603_tape_page_b5_24mm_label12_v1.stl'
+build_b5_page 32 3.0 0.2 5 33.2 12 \
+    '0603_tape_page_b5_32mm_label12_v1.stl'
+build_b5_page 44 3.6 0.2 3 45.2 12 \
+    '0603_tape_page_b5_44mm_label12_v1.stl'
+
 python3 "$INSPECT_STL" "$OUTPUT_DIR/0603_tape_page_8mm_label9_v1.stl" \
     --require-watertight --output \
     "$REPORT_DIR/0603_tape_page_8mm_label9_v1_stl_report.json"
@@ -163,5 +206,18 @@ python3 "$INSPECT_STL" \
     "$OUTPUT_DIR/0603_fit_coupon_dual_t_44mm_label12_v1.stl" \
     --require-watertight --output \
     "$REPORT_DIR/0603_fit_coupon_dual_t_44mm_label12_v1_stl_report.json"
+
+for b5_name in \
+    8mm_label9 \
+    12mm_label12 \
+    16mm_label12_tight \
+    24mm_label12 \
+    32mm_label12 \
+    44mm_label12; do
+    python3 "$INSPECT_STL" \
+        "$OUTPUT_DIR/0603_tape_page_b5_${b5_name}_v1.stl" \
+        --require-watertight --output \
+        "$REPORT_DIR/0603_tape_page_b5_${b5_name}_v1_stl_report.json"
+done
 
 printf 'Platform variants built and checked.\n'

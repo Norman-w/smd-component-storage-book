@@ -132,6 +132,21 @@ output/3d-print/0603_fit_coupon_dual_t_v22_z_wall_t_slot.stl
 
 24 / 32 mm 版本暂按 `3.0 mm` 载带/料槽高度包络建模；44 mm 版本暂按 `3.6 mm` 高度包络建模，作为 ESP32-WROOM 类模组载带的初始版本。载带宽度、料槽深度和元件凸包高度仍需以实物测量为准，正式装满整卷前应先打印对应测试片。
 
+## B5 横向长轨变体
+
+为在左侧继续装订/开合的前提下增加左右方向的存储长度，另提供 `250 × 176 mm` 的 ISO B5 横向页面。左侧保留六孔，孔径 `5.5 mm`，孔距 `19 mm`，孔中心位置为 `15 / 34 / 53 / 123 / 142 / 161 mm`。250 mm 长边在 X1C 的 256 mm 打印轴内约剩 3 mm 单边余量，打印时应精确放置并关闭 brim。
+
+| 编带有效内宽 | 滑道数 / 行距 | 页面高度 | 平台文件 |
+|---:|---:|---:|---|
+| 8 mm | 15 / 11.0 mm | 3.45 mm | `output/3d-print/0603_tape_page_b5_8mm_label9_v1.stl` |
+| 12 mm | 12 / 13.2 mm | 3.45 mm | `output/3d-print/0603_tape_page_b5_12mm_label12_v1.stl` |
+| 16 mm | 9 / 17.2 mm | 3.45 mm | `output/3d-print/0603_tape_page_b5_16mm_label12_tight_v1.stl` |
+| 24 mm | 6 / 25.2 mm | 4.65 mm | `output/3d-print/0603_tape_page_b5_24mm_label12_v1.stl` |
+| 32 mm | 5 / 33.2 mm | 4.65 mm | `output/3d-print/0603_tape_page_b5_32mm_label12_v1.stl` |
+| 44 mm | 3 / 45.2 mm | 5.25 mm | `output/3d-print/0603_tape_page_b5_44mm_label12_v1.stl` |
+
+B5 版的编带插入方向有效长度约 `208 mm`，约为当前 A5 版 `106 mm` 的两倍；相邻滑道仍直接共用约 `0.8 mm` 薄隔墙。
+
 ## 当前打印验证版：12 mm 编带 + 12 mm 标签
 
 本次打印采用独立的 A5 版本：编带净宽按 `12 mm`，标签卡按 `25 × 12 mm`，页面共 `15` 条滑道，滑道中心距为 `13.2 mm`。中心距按 `12 mm` 有效空间、约 `0.8 mm` 共用隔墙和两侧合计 `0.4 mm` 装入余量计算；相邻滑道直接共墙，不再留无效空隙。
